@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
+export const revalidate = 60
 
 export async function generateMetadata() {
   const homepage = await client.fetch(`

@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import StrategyForm from '@/app/components/StrategyForm'
+export const revalidate = 60
 
 export default async function GetStrategy() {
   const form = await client.fetch(`

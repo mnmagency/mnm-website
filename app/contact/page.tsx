@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import ContactForm from '@/app/components/ContactForm'
+export const revalidate = 60
 
 export async function generateMetadata() {
   const page = await client.fetch(`
