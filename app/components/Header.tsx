@@ -27,7 +27,7 @@ export default async function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#33314E]/90 backdrop-blur border-b border-white/10">
       <input id="mobile-menu-toggle" type="checkbox" className="peer hidden" />
 
-      <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div className="relative max-w-7xl mx-auto px-6 py-6 lg:pt-14 flex items-center justify-between">
         <a href="/" className="flex items-center">
           {nav?.logo?.asset?.url ? (
             <img
@@ -40,6 +40,13 @@ export default async function Header() {
               M&M Marketing
             </span>
           )}
+        </a>
+
+        <a
+          href="/seo-audit"
+          className="hidden lg:inline-block absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#e4be61] hover:bg-[#d4ae51] text-white text-sm font-medium px-6 py-2 transition-colors"
+        >
+          Audit Your Website&apos;s SEO Now!
         </a>
 
         <nav className="hidden md:flex items-center gap-8 text-sm text-white/80">
