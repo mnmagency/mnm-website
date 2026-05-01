@@ -1,6 +1,7 @@
 // Header Component (CMS Navigation + Mega Menu + Mobile CSS Menu)
 
 import { client } from '@/lib/sanity'
+import SocialIcons from '@/app/components/SocialIcons'
 
 export default async function Header() {
   const nav = await client.fetch(`
@@ -19,7 +20,13 @@ export default async function Header() {
         }
       },
       ctaText,
-      ctaLink
+      ctaLink,
+      socials{
+        instagram,
+        facebook,
+        x,
+        youtube
+      }
     }
   `)
 
@@ -27,7 +34,7 @@ export default async function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#33314E]/90 backdrop-blur border-b border-white/10">
       <input id="mobile-menu-toggle" type="checkbox" className="peer hidden" />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-6 lg:pt-14 flex items-center justify-between">
+      <div className="relative max-w-7xl mx-auto px-6 py-4 lg:pt-12 lg:pb-3 flex items-center justify-between">
         <a href="/" className="flex items-center">
           {nav?.logo?.asset?.url ? (
             <img
@@ -99,12 +106,16 @@ export default async function Header() {
           ))}
         </nav>
 
-        <a
-          href={nav?.ctaLink || '/get-strategy'}
-          className="hidden md:inline-block bg-[#DFBA67] text-[#33314E] px-5 py-3 rounded-full font-bold text-sm hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-[#DFBA67]/20"
-        >
-          {nav?.ctaText || 'Get Strategy'}
-        </a>
+        <div className="hidden md:flex items-center gap-5">
+          <SocialIcons socials={nav?.socials} iconClassName="w-4 h-4" />
+
+          <a
+            href={nav?.ctaLink || '/get-strategy'}
+            className="bg-[#DFBA67] text-[#33314E] px-5 py-3 rounded-full font-bold text-sm hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-[#DFBA67]/20"
+          >
+            {nav?.ctaText || 'Get Strategy'}
+          </a>
+        </div>
 
         <label
           htmlFor="mobile-menu-toggle"

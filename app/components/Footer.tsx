@@ -1,4 +1,5 @@
 import { client } from '@/lib/sanity'
+import SocialIcons from '@/app/components/SocialIcons'
 
 export default async function Footer() {
   const nav = await client.fetch(`
@@ -22,7 +23,13 @@ export default async function Footer() {
       footerDescription,
       address,
       phone,
-      email
+      email,
+      socials{
+        instagram,
+        facebook,
+        x,
+        youtube
+      }
     }
   `)
 
@@ -122,17 +129,25 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row justify-between gap-4 text-white/40 text-sm">
+        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row md:items-center justify-between gap-4 text-white/40 text-sm">
           <p>
             © {new Date().getFullYear()} M&M Marketing. All rights reserved.
           </p>
 
-          <a
-            href={nav?.ctaLink || '/get-strategy'}
-            className="text-[#DFBA67] font-bold"
-          >
-            {nav?.ctaText || 'Get Strategy'}
-          </a>
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+            <SocialIcons
+              socials={nav?.socials}
+              showLabel
+              labelClassName="text-sm text-white/60"
+            />
+
+            <a
+              href={nav?.ctaLink || '/get-strategy'}
+              className="text-[#DFBA67] font-bold"
+            >
+              {nav?.ctaText || 'Get Strategy'}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
