@@ -43,7 +43,7 @@ export default async function Header() {
         </a>
 
         <a
-          href="/seo-audit"
+          href="https://seo.mnmagency.com"
           className="hidden lg:inline-block absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#e4be61] hover:bg-[#d4ae51] text-white text-sm font-medium px-6 py-2 transition-colors"
         >
           Audit Your Website&apos;s SEO Now!
