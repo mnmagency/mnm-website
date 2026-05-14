@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-llms.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-llms": "node scripts/generate-llms.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^6.2.0",

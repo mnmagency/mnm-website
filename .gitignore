@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated llms.txt files (rebuilt by scripts/generate-llms.mjs on every build)
+/llms.txt
+/llms-full.txt
+/public/llms.txt
+/public/llms-full.txt
