@@ -1,18 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Locale routing.
+ * Locale routing (Next.js 16 proxy — renamed from middleware).
  *
  *  English is default and has no URL prefix: /about, /blog, /contact
  *  Arabic is served under /ar/*: /ar/about, /ar/blog, /ar/contact
  *
- * This middleware:
+ * This proxy:
  *  - Strips the /ar prefix from the URL before it reaches the app router
  *  - Sets x-locale: ar on the request so server components can read it
  *
  * That way we get bilingual routing without duplicating every page file.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   if (pathname === '/ar' || pathname.startsWith('/ar/')) {
