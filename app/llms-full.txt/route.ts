@@ -197,10 +197,13 @@ export async function GET() {
     }
   }
 
-  return new Response(lines.join('\n'), {
+  const body = lines.join('\n')
+  const bytes = new TextEncoder().encode(body)
+  return new Response(bytes, {
     headers: {
       'content-type': 'text/plain; charset=utf-8',
       'cache-control': 'public, max-age=600, s-maxage=600',
+      'content-length': bytes.byteLength.toString(),
     },
   })
 }
