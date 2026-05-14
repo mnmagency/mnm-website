@@ -24,3 +24,37 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ---------------------------------------------------------------------------
+ * RTL adjustments for Arabic
+ *
+ * `<html dir="rtl">` from middleware handles the bulk of mirroring
+ * automatically (text alignment, flex/grid reversal, etc.). These rules
+ * cover the cases the browser can't infer:
+ *
+ *  - Arrow glyphs in CMS text (← → ›) need to be mirrored
+ *  - SVG icons marked .rtl-flip get mirrored
+ *  - Animated marquees flow the other way
+ * --------------------------------------------------------------------------- */
+
+[dir="rtl"] {
+  /* Use a font stack that has good Arabic coverage (system Arabic fonts) */
+  font-family: "Geeza Pro", "Segoe UI", "Tahoma", Arial, sans-serif;
+}
+
+/* Mirror unicode arrow glyphs that the CMS author wrote left-to-right.
+   This applies to inline text only; SVGs are handled below. */
+[dir="rtl"] .rtl-mirror-arrows {
+  unicode-bidi: bidi-override;
+}
+
+/* Class to manually flip an SVG when it represents a direction (← / →) */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* Marquee animation reversed in RTL so logos still appear to scroll
+   from the leading edge to the trailing edge of the page. */
+[dir="rtl"] [data-marquee] {
+  animation-direction: reverse;
+}

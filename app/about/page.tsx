@@ -1,87 +1,123 @@
+import Image from 'next/image'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
+import { localize, localizePath } from '@/lib/locale'
+import { getLocale } from '@/lib/locale-server'
+
 export const revalidate = 60
 
+type LocaleField = { en?: string; ar?: string } | string | null | undefined
+
+type AboutPage = {
+  seo?: {
+    metaTitle?: LocaleField
+    metaDescription?: LocaleField
+    canonicalUrl?: string
+    ogImage?: { asset?: { url?: string } }
+  }
+  eyebrow?: LocaleField
+  title?: LocaleField
+  subtitle?: LocaleField
+  heroImage?: { asset?: { url?: string } }
+  heroImageAlt?: LocaleField
+  positioningTitle?: LocaleField
+  positioning?: LocaleField
+  missionEyebrow?: LocaleField
+  missionTitle?: LocaleField
+  missionText?: LocaleField
+  methodologyEyebrow?: LocaleField
+  methodologyTitle?: LocaleField
+  methodologyText?: LocaleField
+  principlesEyebrow?: LocaleField
+  principlesTitle?: LocaleField
+  principles?: Array<LocaleField>
+  ctaTitle?: LocaleField
+  ctaText?: LocaleField
+  ctaButtonText?: LocaleField
+  ctaButtonLink?: string
+}
+
 export async function generateMetadata() {
-  const page = await client.fetch(`
+  const locale = await getLocale()
+  const page = await client.fetch<AboutPage | null>(`
     *[_type == "aboutPage"][0]{
-      seo{
-        metaTitle,
-        metaDescription,
-        canonicalUrl
-      }
+      seo{ metaTitle, metaDescription, canonicalUrl }
     }
   `)
 
   const seo = page?.seo
-
   return {
-    title: seo?.metaTitle || 'About M&M Marketing Qatar',
+    title: localize(seo?.metaTitle, locale) || 'About M&M Marketing Qatar',
     description:
-      seo?.metaDescription ||
+      localize(seo?.metaDescription, locale) ||
       'M&M Marketing builds growth systems combining strategy, execution, and measurable results for businesses in Qatar.',
-    alternates: {
-      canonical: seo?.canonicalUrl || undefined,
-    },
+    alternates: { canonical: seo?.canonicalUrl || undefined },
   }
 }
 
 export default async function AboutPage() {
-    const page = await client.fetch(`
-        *[_type == "aboutPage"][0]{
-          title,
-          subtitle,
-          heroImage{
-            asset->{url}
-          },
-          positioning,
-          missionTitle,
-          missionText,
-          methodologyTitle,
-          methodologyText,
-          principles,
-          ctaTitle,
-          ctaText
-        }
-      `)
+  const locale = await getLocale()
+  const page = await client.fetch<AboutPage | null>(`
+    *[_type == "aboutPage"][0]{
+      eyebrow, title, subtitle,
+      heroImage{ asset->{url} }, heroImageAlt,
+      positioningTitle, positioning,
+      missionEyebrow, missionTitle, missionText,
+      methodologyEyebrow, methodologyTitle, methodologyText,
+      principlesEyebrow, principlesTitle, principles,
+      ctaTitle, ctaText, ctaButtonText, ctaButtonLink
+    }
+  `)
+
+  const L = (f: LocaleField) => localize(f, locale)
+  const eyebrow            = L(page?.eyebrow)            || 'About'
+  const title              = L(page?.title)
+  const subtitle           = L(page?.subtitle)
+  const heroImageAlt       = L(page?.heroImageAlt)       || 'About M&M Marketing'
+  const positioningTitle   = L(page?.positioningTitle)   || "We don't just market. We build growth systems."
+  const positioning        = L(page?.positioning)
+  const missionEyebrow     = L(page?.missionEyebrow)     || 'Mission'
+  const missionTitle       = L(page?.missionTitle)
+  const missionText        = L(page?.missionText)
+  const methodologyEyebrow = L(page?.methodologyEyebrow) || 'Methodology'
+  const methodologyTitle   = L(page?.methodologyTitle)
+  const methodologyText    = L(page?.methodologyText)
+  const principlesEyebrow  = L(page?.principlesEyebrow)  || 'Principles'
+  const principlesTitle    = L(page?.principlesTitle)    || 'How we think. How we execute.'
+  const ctaTitle           = L(page?.ctaTitle)
+  const ctaText            = L(page?.ctaText)
+  const ctaButtonText      = L(page?.ctaButtonText)      || 'Get Your AI Growth Strategy'
+  const ctaButtonLink      = localizePath(page?.ctaButtonLink || '/get-strategy', locale)
 
   return (
     <PageLayout>
       {/* HERO */}
       <section className="max-w-7xl mx-auto px-6 pt-40 pb-24">
-        <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
-          About
-        </p>
+        <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{eyebrow}</p>
 
-        <h1 className="text-4xl md:text-7xl font-bold mb-6 max-w-5xl">
-          {page?.title}
-        </h1>
+        <h1 className="text-4xl md:text-7xl font-bold mb-6 max-w-5xl">{title}</h1>
 
-        <p className="text-lg text-[#8A95A5] max-w-3xl">
-          {page?.subtitle}
-        </p>
-       
-  {page?.heroImage?.asset?.url && (
-    <div className="mt-12 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30">
-      <img
-        src={page.heroImage.asset.url}
-        alt="About M&M Marketing"
-        className="w-full h-[500px] object-cover"
-      />
-    </div>
-  )}
+        <p className="text-lg text-[#8A95A5] max-w-3xl">{subtitle}</p>
+
+        {page?.heroImage?.asset?.url && (
+          <div className="relative mt-12 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 h-[500px]">
+            <Image
+              src={page.heroImage.asset.url}
+              alt={heroImageAlt}
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1200px"
+              className="object-cover"
+            />
+          </div>
+        )}
       </section>
 
       {/* POSITIONING */}
       <section className="max-w-5xl mx-auto px-6 pb-24">
         <div className="bg-white/[0.06] border border-white/10 rounded-3xl p-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            We don’t just market. We build growth systems.
-          </h2>
-
-          <p className="text-[#8A95A5] leading-relaxed text-lg">
-            {page?.positioning}
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">{positioningTitle}</h2>
+          <p className="text-[#8A95A5] leading-relaxed text-lg">{positioning}</p>
         </div>
       </section>
 
@@ -89,59 +125,30 @@ export default async function AboutPage() {
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-white/[0.06] border border-white/10 rounded-3xl p-8">
-            <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
-              Mission
-            </p>
-
-            <h2 className="text-2xl font-bold mb-4">
-              {page?.missionTitle}
-            </h2>
-
-            <p className="text-[#8A95A5] leading-relaxed whitespace-pre-line">
-              {page?.missionText}
-            </p>
+            <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{missionEyebrow}</p>
+            <h2 className="text-2xl font-bold mb-4">{missionTitle}</h2>
+            <p className="text-[#8A95A5] leading-relaxed whitespace-pre-line">{missionText}</p>
           </div>
 
           <div className="bg-white/[0.06] border border-white/10 rounded-3xl p-8">
-            <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
-              Methodology
-            </p>
-
-            <h2 className="text-2xl font-bold mb-4">
-              {page?.methodologyTitle}
-            </h2>
-
-            <p className="text-[#8A95A5] leading-relaxed whitespace-pre-line">
-              {page?.methodologyText}
-            </p>
+            <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{methodologyEyebrow}</p>
+            <h2 className="text-2xl font-bold mb-4">{methodologyTitle}</h2>
+            <p className="text-[#8A95A5] leading-relaxed whitespace-pre-line">{methodologyText}</p>
           </div>
         </div>
       </section>
 
       {/* PRINCIPLES */}
-      {page?.principles?.length > 0 && (
+      {page?.principles && page.principles.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 pb-24">
-          <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
-            Principles
-          </p>
-
-          <h2 className="text-3xl md:text-5xl font-bold mb-10">
-            How we think. How we execute.
-          </h2>
+          <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{principlesEyebrow}</p>
+          <h2 className="text-3xl md:text-5xl font-bold mb-10">{principlesTitle}</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {page.principles.map((item: string, index: number) => (
-              <div
-                key={index}
-                className="bg-white/[0.06] border border-white/10 rounded-2xl p-6"
-              >
-                <span className="text-[#DFBA67] font-bold block mb-3">
-                  0{index + 1}
-                </span>
-
-                <p className="text-[#8A95A5]">
-                  {item}
-                </p>
+            {page.principles.map((item: LocaleField, index: number) => (
+              <div key={index} className="bg-white/[0.06] border border-white/10 rounded-2xl p-6">
+                <span className="text-[#DFBA67] font-bold block mb-3">0{index + 1}</span>
+                <p className="text-[#8A95A5]">{L(item)}</p>
               </div>
             ))}
           </div>
@@ -151,19 +158,10 @@ export default async function AboutPage() {
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="bg-[#DFBA67] text-[#33314E] rounded-[2rem] p-10 md:p-16 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            {page?.ctaTitle}
-          </h2>
-
-          <p className="text-lg text-[#33314E]/80 max-w-3xl mx-auto mb-8">
-            {page?.ctaText}
-          </p>
-
-          <a
-            href="/get-strategy"
-            className="inline-block bg-[#33314E] text-white px-10 py-4 rounded-full font-bold"
-          >
-            Get Your AI Growth Strategy
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">{ctaTitle}</h2>
+          <p className="text-lg text-[#33314E]/80 max-w-3xl mx-auto mb-8">{ctaText}</p>
+          <a href={ctaButtonLink} className="inline-block bg-[#33314E] text-white px-10 py-4 rounded-full font-bold">
+            {ctaButtonText}
           </a>
         </div>
       </section>

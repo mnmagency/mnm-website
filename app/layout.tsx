@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { dir, htmlLang } from "@/lib/locale";
+import { getLocale } from "@/lib/locale-server";
+
+// The root layout reads the request locale from the x-locale header set by
+// middleware. Forcing dynamic rendering ensures it re-runs on every nav so
+// html dir/lang stay in sync with the URL.
+export const dynamic = 'force-dynamic';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,14 +26,17 @@ export const metadata: Metadata = {
     "M&M Marketing helps brands in Qatar grow through websites, SEO, social media, paid media, branding, and AI-driven marketing systems.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="en"
+      lang={htmlLang(locale)}
+      dir={dir(locale)}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>

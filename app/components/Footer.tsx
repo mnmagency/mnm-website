@@ -1,12 +1,24 @@
 import { client } from '@/lib/sanity'
 import SocialIcons from '@/app/components/SocialIcons'
+import { localize, localizePath } from '@/lib/locale'
+import { getLocale } from '@/lib/locale-server'
+
+type LocaleField = { en?: string; ar?: string } | string | null | undefined
+
+type FooterLink = { label?: LocaleField; link?: string }
+type FooterColumn = { columnTitle?: LocaleField; links?: FooterLink[] }
 
 export default async function Footer() {
+  const locale = await getLocale()
+
   const nav = await client.fetch(`
     *[_type == "navigation"][0]{
+      brandName,
       logo{
         asset->{url}
       },
+      copyright,
+      contactColumnTitle,
       footerColumns[]{
         columnTitle,
         links[]{
@@ -33,11 +45,21 @@ export default async function Footer() {
     }
   `)
 
-  const footerColumns = nav?.footerColumns?.length
+  const brand = nav?.brandName || 'M&M Marketing'
+  const contactColumnTitle = localize(nav?.contactColumnTitle, locale) || 'Contact'
+  const year = new Date().getFullYear()
+  const copyrightTemplate = localize(nav?.copyright, locale) || `© {year} ${brand}. All rights reserved.`
+  const copyright = copyrightTemplate.replace('{year}', String(year))
+  const ctaText = localize(nav?.ctaText, locale) || 'Get Strategy'
+  const ctaLink = nav?.ctaLink ? localizePath(nav.ctaLink, locale) : localizePath('/get-strategy', locale)
+  const footerDescription = localize(nav?.footerDescription, locale)
+  const address = localize(nav?.address, locale)
+
+  const footerColumns: FooterColumn[] = nav?.footerColumns?.length
     ? nav.footerColumns
     : [
         {
-          columnTitle: 'Navigation',
+          columnTitle: { en: 'Navigation', ar: 'القائمة' },
           links: nav?.items || [],
         },
       ]
@@ -52,67 +74,69 @@ export default async function Footer() {
             {nav?.logo?.asset?.url ? (
               <img
                 src={nav.logo.asset.url}
-                alt="M&M Marketing"
+                alt={brand}
                 className="h-14 w-auto mb-6"
               />
             ) : (
               <h3 className="text-[#DFBA67] text-2xl font-bold mb-4">
-                M&M Marketing
+                {brand}
               </h3>
             )}
 
-            <p className="text-white/60 max-w-md leading-relaxed text-sm">
-              {nav?.footerDescription}
-            </p>
+            {footerDescription && (
+              <p className="text-white/60 max-w-md leading-relaxed text-sm">
+                {footerDescription}
+              </p>
+            )}
 
             <div className="mt-6 flex gap-4">
               {nav?.phone && (
                 <a href={`tel:${nav.phone}`} className="text-[#DFBA67] text-sm hover:opacity-80">
-                  Call
+                  {locale === 'ar' ? 'اتصل' : 'Call'}
                 </a>
               )}
 
               {nav?.email && (
                 <a href={`mailto:${nav.email}`} className="text-[#DFBA67] text-sm hover:opacity-80">
-                  Email
+                  {locale === 'ar' ? 'البريد' : 'Email'}
                 </a>
               )}
             </div>
           </div>
 
-{/* CMS FOOTER COLUMNS */}
-<div className="lg:col-span-1">
-  <div className="grid grid-cols-2 gap-10">
-    {footerColumns.map((column: any, index: number) => (
-      <div key={index}>
-        <h4 className="text-[#DFBA67] font-bold mb-5">
-          {column.columnTitle}
-        </h4>
+          {/* CMS FOOTER COLUMNS */}
+          <div className="lg:col-span-1">
+            <div className="grid grid-cols-2 gap-10">
+              {footerColumns.map((column: FooterColumn, index: number) => (
+                <div key={index}>
+                  <h4 className="text-[#DFBA67] font-bold mb-5">
+                    {localize(column.columnTitle, locale)}
+                  </h4>
 
-        <div className="flex flex-col gap-3 text-white/60">
-          {column?.links?.map((item: any, itemIndex: number) => (
-            <a
-              key={itemIndex}
-              href={item.link}
-              className="hover:text-[#DFBA67] transition"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
+                  <div className="flex flex-col gap-3 text-white/60">
+                    {column?.links?.map((item: FooterLink, itemIndex: number) => (
+                      <a
+                        key={itemIndex}
+                        href={item.link ? localizePath(item.link, locale) : '#'}
+                        className="hover:text-[#DFBA67] transition"
+                      >
+                        {localize(item.label, locale)}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* CONTACT ALWAYS VISIBLE */}
           <div>
             <h4 className="text-[#DFBA67] font-bold mb-5">
-              Contact
+              {contactColumnTitle}
             </h4>
 
             <div className="flex flex-col gap-3 text-white/60">
-              {nav?.address && <p>{nav.address}</p>}
+              {address && <p>{address}</p>}
 
               {nav?.phone && (
                 <a href={`tel:${nav.phone}`} className="hover:text-[#DFBA67] transition">
@@ -130,9 +154,7 @@ export default async function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row md:items-center justify-between gap-4 text-white/40 text-sm">
-          <p>
-            © {new Date().getFullYear()} M&M Marketing. All rights reserved.
-          </p>
+          <p>{copyright}</p>
 
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <SocialIcons
@@ -142,10 +164,10 @@ export default async function Footer() {
             />
 
             <a
-              href={nav?.ctaLink || '/get-strategy'}
+              href={ctaLink}
               className="text-[#DFBA67] font-bold"
             >
-              {nav?.ctaText || 'Get Strategy'}
+              {ctaText}
             </a>
           </div>
         </div>
