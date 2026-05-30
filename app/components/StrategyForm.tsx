@@ -32,6 +32,12 @@ type Props = {
   submitText?: string
   successMessage?: string
   errorMessage?: string
+  /**
+   * If set, the "Select Service" dropdown is replaced with a hidden input
+   * carrying this value. Used by campaign landing pages so the lead arrives
+   * pre-tagged with the source service (e.g. "SEO Retainer Qatar").
+   */
+  defaultService?: string
 }
 
 function escapeForRegex(value: string): string {
@@ -48,6 +54,7 @@ export default function StrategyForm({
   submitText = 'Get Strategy',
   successMessage = "Thanks — we'll be in touch shortly.",
   errorMessage = 'Sorry, something went wrong. Please try again or email us directly.',
+  defaultService,
 }: Props) {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -177,21 +184,25 @@ export default function StrategyForm({
         className="w-full p-4 rounded bg-white/10 outline-none"
       />
 
-      {services.length > 0 && (
-        <select
-          name="service"
-          className="w-full p-4 rounded bg-white/10 outline-none text-white/80"
-          defaultValue=""
-        >
-          <option value="" disabled>
-            {placeholders?.service || 'Select Service'}
-          </option>
-          {services.map((service, index) => (
-            <option key={index} value={service} className="text-[#33314E]">
-              {service}
+      {defaultService ? (
+        <input type="hidden" name="service" value={defaultService} />
+      ) : (
+        services.length > 0 && (
+          <select
+            name="service"
+            className="w-full p-4 rounded bg-white/10 outline-none text-white/80"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              {placeholders?.service || 'Select Service'}
             </option>
-          ))}
-        </select>
+            {services.map((service, index) => (
+              <option key={index} value={service} className="text-[#33314E]">
+                {service}
+              </option>
+            ))}
+          </select>
+        )
       )}
 
       {budgetOptions.length > 0 ? (

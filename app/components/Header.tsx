@@ -88,7 +88,7 @@ export default async function Header() {
           </a>
         )}
 
-        <nav className="hidden md:flex items-center gap-8 text-sm text-white/80">
+        <nav className="hidden lg:flex items-center gap-8 text-sm text-white/80">
           {nav?.items?.map((item: NavItem, index: number) => {
             const label = localize(item.label, locale)
             const itemLink = item.link ? localizePath(item.link, locale) : '#'
@@ -103,8 +103,8 @@ export default async function Header() {
                       <span className="text-xs">▾</span>
                     </button>
 
-                    <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 absolute left-1/2 -translate-x-1/2 top-full pt-6">
-                      <div className="w-[820px] rounded-3xl bg-white text-[#33314E] border border-black/5 shadow-2xl shadow-black/30 p-8">
+                    <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 absolute left-0 top-full pt-6">
+                      <div className="w-[min(820px,calc(100vw-3rem))] rounded-3xl bg-white text-[#33314E] border border-black/5 shadow-2xl shadow-black/30 p-8">
                         <div className="mb-5">
                           <p className="text-[#DFBA67] uppercase tracking-widest text-xs font-bold mb-2">
                             {label}
@@ -146,7 +146,7 @@ export default async function Header() {
           })}
         </nav>
 
-        <div className="hidden md:flex items-center gap-5">
+        <div className="hidden lg:flex items-center gap-5">
           <LocaleSwitcher currentLocale={locale} />
           <SocialIcons socials={nav?.socials} iconClassName="w-4 h-4" />
 
@@ -160,13 +160,13 @@ export default async function Header() {
 
         <label
           htmlFor="mobile-menu-toggle"
-          className="md:hidden text-white text-3xl cursor-pointer"
+          className="lg:hidden text-white text-3xl cursor-pointer"
         >
           ☰
         </label>
       </div>
 
-      <div className="hidden peer-checked:block md:hidden bg-[#33314E] border-t border-white/10 px-6 pb-6">
+      <div className="hidden peer-checked:block lg:hidden bg-[#33314E] border-t border-white/10 px-6 pb-6">
         <div className="flex flex-col gap-5 pt-5">
           {nav?.items?.map((item: NavItem, index: number) => {
             const label = localize(item.label, locale)

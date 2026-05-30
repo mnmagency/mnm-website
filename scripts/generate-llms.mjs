@@ -93,6 +93,9 @@ async function fetchAll() {
       "blogsIndex": *[_type == "blog" && defined(slug.current)] | order(publishedAt desc)[0...50]{
         title, slug, excerpt, category, publishedAt
       },
+      "landingPages": *[_type == "landingPage" && defined(slug.current)] | order(_createdAt asc){
+        slug, serviceTag, hero, includes, faqs
+      },
       "faqs": *[_type == "faq" && showOnFaqPage == true] | order(order asc, _createdAt asc){
         question, answer, category
       }
@@ -189,6 +192,20 @@ function buildLlmsTxt(data) {
       const a = clean(localize(f.answer, 'en')).slice(0, 300)
       if (!q || !a) continue
       lines.push(`- **${q}** ${a}`)
+    }
+    lines.push('')
+  }
+
+  if (data.landingPages?.length > 0) {
+    lines.push('## Campaign landing pages')
+    lines.push('')
+    for (const lp of data.landingPages) {
+      const slug = lp.slug?.current
+      if (!slug) continue
+      const title = clean(localize(lp.hero?.title, 'en') || slug)
+      const subtitle = clean(localize(lp.hero?.subtitle, 'en')).slice(0, 180)
+      lines.push(`- [${title}](${SITE_URL}/lp/${slug})${subtitle ? `: ${subtitle}` : ''}`)
+      lines.push(`- [${title} (العربية)](${SITE_URL}/ar/lp/${slug})`)
     }
     lines.push('')
   }

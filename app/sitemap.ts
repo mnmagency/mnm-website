@@ -20,11 +20,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     services: Slug[]
     blogs: Slug[]
     caseStudies: Slug[]
+    landingPages: Slug[]
   }>(`
     {
-      "services":    *[_type == "service"   && defined(slug.current)]{ slug, _updatedAt },
-      "blogs":       *[_type == "blog"      && defined(slug.current)]{ slug, _updatedAt },
-      "caseStudies": *[_type == "caseStudy" && defined(slug.current)]{ slug, _updatedAt }
+      "services":     *[_type == "service"     && defined(slug.current)]{ slug, _updatedAt },
+      "blogs":        *[_type == "blog"        && defined(slug.current)]{ slug, _updatedAt },
+      "caseStudies":  *[_type == "caseStudy"   && defined(slug.current)]{ slug, _updatedAt },
+      "landingPages": *[_type == "landingPage" && defined(slug.current)]{ slug, _updatedAt }
     }
   `)
 
@@ -99,9 +101,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
-    ...dynamicEntries('/services',     data?.services    ?? [], 'monthly', 0.8),
-    ...dynamicEntries('/case-studies', data?.caseStudies ?? [], 'monthly', 0.7),
-    ...dynamicEntries('/blog',         data?.blogs       ?? [], 'weekly',  0.6),
+    ...dynamicEntries('/services',     data?.services     ?? [], 'monthly', 0.8),
+    ...dynamicEntries('/case-studies', data?.caseStudies  ?? [], 'monthly', 0.7),
+    ...dynamicEntries('/blog',         data?.blogs        ?? [], 'weekly',  0.6),
+    // Campaign landing pages — high priority for ranking on target keywords
+    ...dynamicEntries('/lp',           data?.landingPages ?? [], 'monthly', 0.9),
   ]
 
   return [...staticRoutes, ...dynamicRoutes]
