@@ -232,10 +232,87 @@ export default async function Home() {
   return (
     <PageLayout>
       {/* ─────────────────────────────────────────────────────────────
-           1. HERO — balanced typography + vertically-centered visual
-                    Fits one viewport, no scroll, header clearance built in.
+           1. HERO — MOBILE: video on top, text below (stacked, no overlap).
+                    DESKTOP: text left, D-shape video right (side by side).
          ───────────────────────────────────────────────────────────── */}
-      <section className="relative bg-[#0E1635] overflow-hidden h-screen min-h-[680px] max-h-[920px] flex items-center pt-24 lg:pt-28">
+
+      {/* ─── MOBILE HERO (< sm) — stacked, video top, text below ─── */}
+      <section className="sm:hidden relative bg-[#0E1635] overflow-hidden pt-24 pb-16">
+        {/* Ambient glows */}
+        <div className="absolute inset-0 opacity-[0.10] pointer-events-none" style={{
+          backgroundImage:
+            'radial-gradient(circle at 12% 25%, #DFBA67 0%, transparent 32%), radial-gradient(circle at 88% 75%, #DFBA67 0%, transparent 38%)',
+        }} />
+
+        {/* Video / Image on top — full width rounded card */}
+        <div className="relative z-10 mx-6 mb-10">
+          <div className="relative rounded-[2rem] overflow-hidden aspect-[4/3] shadow-2xl shadow-black/50 bg-[#0E1635] border border-[#DFBA67]/40">
+            {homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
+              <video
+                src={homepage.heroVideoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : homepage?.heroImage?.asset?.url ? (
+              <Image
+                src={homepage.heroImage.asset.url}
+                alt={heroImageAlt}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+            ) : (
+              <div
+                className="w-full h-full animate-[spin_60s_linear_infinite]"
+                style={{
+                  background:
+                    'conic-gradient(from 0deg, #DFBA67, #DFBA67, #DFBA67, #DFBA67)',
+                  opacity: 0.9,
+                }}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Text block below the video */}
+        <div className="relative z-10 px-6">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-white/60 mb-4 font-medium">
+            {heroEyebrow}
+          </p>
+          <h1 className="text-[2rem] font-bold leading-[1] tracking-[-0.025em] text-white mb-5 uppercase">
+            {heroTitle}
+          </h1>
+          <p className="text-sm text-white/70 leading-relaxed mb-6 font-light">
+            {heroSubtitle}
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <a
+              href={primaryCtaLink}
+              className="inline-flex items-center gap-2 text-white font-bold text-sm px-6 py-3 rounded-full shadow-lg shadow-[#DFBA67]/25"
+              style={{ background: 'linear-gradient(95deg, #DFBA67 0%, #DFBA67 100%)' }}
+            >
+              <span>{buttonText}</span>
+              <span className="text-lg">›</span>
+            </a>
+            {secondaryButtonText && (
+              <a
+                href={secondaryCtaLink}
+                className="inline-flex items-center gap-2 text-white font-bold text-sm border-b-2 border-[#DFBA67] pb-1"
+              >
+                <span>{secondaryButtonText.replace(/\s*→\s*$/, '')}</span>
+                <span className="text-[#DFBA67]">›</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── DESKTOP HERO (sm+) — original absolute D-shape layout ─── */}
+      <section className="hidden sm:flex relative bg-[#0E1635] overflow-hidden h-screen min-h-[680px] max-h-[920px] items-center pt-24 lg:pt-28">
         {/* Ambient brand-tinted glows */}
         <div className="absolute inset-0 opacity-[0.10] pointer-events-none" style={{
           backgroundImage:
@@ -244,11 +321,10 @@ export default async function Home() {
 
         {/* Hero visual — semi-circle (D-shape).
            In LTR: sits flush to the RIGHT, curve opens LEFT, text on left.
-           In RTL: MIRRORED — flush to the LEFT, curve opens RIGHT, text on right.
-           This prevents the Arabic headline colliding with the video. */}
+           In RTL: MIRRORED — flush to the LEFT, curve opens RIGHT, text on right. */}
         <div
           aria-hidden="true"
-          className={`hidden sm:block absolute top-1/2 -translate-y-1/2 ${isRtl ? 'left-0' : 'right-0'} w-[64%] md:w-[58%] lg:w-[56%] xl:w-[54%] h-[92%] lg:h-[95%] z-0 pointer-events-none`}
+          className={`absolute top-1/2 -translate-y-1/2 ${isRtl ? 'left-0' : 'right-0'} w-[64%] md:w-[58%] lg:w-[56%] xl:w-[54%] h-[92%] lg:h-[95%] z-0 pointer-events-none`}
         >
           {/* Outer glow — bleeds away from the curved edge */}
           <div
@@ -302,10 +378,11 @@ export default async function Home() {
           <div className={`absolute inset-[1.5%] ${isRtl ? 'rounded-r-full' : 'rounded-l-full'} border border-[#DFBA67]/40 pointer-events-none`} />
         </div>
 
-        {/* Vignette — strong dark veil on the SIDE OPPOSITE the D-shape,
-           so the headline pops out from a dark backdrop. In LTR the veil
-           is heaviest on the left; in RTL, heaviest on the right. */}
-        <div className="absolute inset-0 pointer-events-none" style={{
+        {/* Vignette — strong dark veil so headline pops out from dark backdrop.
+           Mobile: nearly opaque across full width (video sits low-opacity behind).
+           Desktop: gradient concentrated on the SIDE OPPOSITE the D-shape. */}
+        <div className="sm:hidden absolute inset-0 pointer-events-none bg-[#0F0E1C]/85" />
+        <div className="hidden sm:block absolute inset-0 pointer-events-none" style={{
           background: isRtl
             ? 'linear-gradient(270deg, rgba(15,14,28,0.92) 0%, rgba(15,14,28,0.78) 30%, rgba(15,14,28,0.3) 55%, rgba(15,14,28,0.15) 80%, rgba(15,14,28,0.35) 100%)'
             : 'linear-gradient(90deg, rgba(15,14,28,0.92) 0%, rgba(15,14,28,0.78) 30%, rgba(15,14,28,0.3) 55%, rgba(15,14,28,0.15) 80%, rgba(15,14,28,0.35) 100%)',
