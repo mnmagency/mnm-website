@@ -38,8 +38,97 @@ body {
  * --------------------------------------------------------------------------- */
 
 [dir="rtl"] {
-  /* Use a font stack that has good Arabic coverage (system Arabic fonts) */
-  font-family: "Geeza Pro", "Segoe UI", "Tahoma", Arial, sans-serif;
+  /* Cairo (from next/font/google, loaded in layout.tsx) — bundles Arabic +
+     Latin, renders identically on every device. Fallback stack covers
+     older systems that might not receive the web font. */
+  font-family: var(--font-cairo), "IBM Plex Sans Arabic", "Tajawal",
+    "SF Arabic", "Geeza Pro", "Segoe UI", Tahoma, Arial, sans-serif;
+
+  /* Arabic script sits taller than Latin — bump the line-height so
+     stacked headlines and long body paragraphs breathe properly. */
+  line-height: 1.75;
+}
+
+/* Arabic sizing model:
+ *   SMALL text  (eyebrows, helper, body) → BIGGER in RTL
+ *     Latin dominates its em-box with cap-height; Arabic sits smaller
+ *     within it, so eyebrow text at 12px reads like 9px in Arabic. Bump.
+ *
+ *   LARGE text  (h1, h2 headlines) → SMALLER in RTL
+ *     Arabic characters are visually wider at the same em size (joined
+ *     letterforms + broader glyphs), so a headline that fits Latin in a
+ *     560px container will overflow in Arabic. Cap the large sizes so
+ *     they fit the same containers.
+ */
+
+/* ─── SMALL text — bump up so it reads confidently ─── */
+[dir="rtl"] .text-\[10px\]  { font-size: 0.9375rem;  }   /* 10px  → 15px  */
+[dir="rtl"] .text-\[11px\]  { font-size: 1rem;       }   /* 11px  → 16px  */
+[dir="rtl"] .text-xs        { font-size: 0.95rem;    }   /* 0.75  → 0.95  */
+[dir="rtl"] .text-sm        { font-size: 1.05rem;    }   /* 0.875 → 1.05  */
+[dir="rtl"] .text-base      { font-size: 1.15rem;    }   /* 1     → 1.15  */
+[dir="rtl"] .text-lg        { font-size: 1.2rem;     }   /* 1.125 → 1.2   */
+[dir="rtl"] .text-xl        { font-size: 1.3rem;     }   /* 1.25  → 1.3   */
+[dir="rtl"] .text-2xl       { font-size: 1.55rem;    }   /* 1.5   → 1.55  */
+
+/* ─── LARGE text — pull DOWN so Arabic headlines fit their containers ─── */
+[dir="rtl"] .text-3xl        { font-size: 1.65rem;   }   /* 1.875 → 1.65 */
+[dir="rtl"] .text-4xl        { font-size: 1.95rem;   }   /* 2.25  → 1.95 */
+[dir="rtl"] .text-5xl        { font-size: 2.5rem;    }   /* 3     → 2.5  */
+[dir="rtl"] .text-6xl        { font-size: 3rem;      }   /* 3.75  → 3    */
+[dir="rtl"] .text-7xl        { font-size: 3.5rem;    }   /* 4.5   → 3.5  */
+
+/* Arbitrary-value headline sizes used throughout the homepage hero and
+   section titles. Latin sizes stay untouched; Arabic renders ~20 % smaller
+   so it fits inside the existing max-width text columns without overflow. */
+[dir="rtl"] .text-\[2rem\]        { font-size: 1.6rem;   }
+[dir="rtl"] .text-\[2\.5rem\]     { font-size: 2rem;     }
+[dir="rtl"] .text-\[2\.75rem\]    { font-size: 2.15rem;  }
+[dir="rtl"] .text-\[3rem\]        { font-size: 2.35rem;  }
+[dir="rtl"] .text-\[3\.25rem\]    { font-size: 2.55rem;  }
+[dir="rtl"] .text-\[3\.5rem\]     { font-size: 2.75rem;  }
+[dir="rtl"] .text-\[3\.75rem\]    { font-size: 2.95rem;  }
+[dir="rtl"] .text-\[4rem\]        { font-size: 3.15rem;  }
+[dir="rtl"] .text-\[4\.25rem\]    { font-size: 3.3rem;   }
+[dir="rtl"] .text-\[4\.5rem\]     { font-size: 3.5rem;   }
+[dir="rtl"] .text-\[4\.75rem\]    { font-size: 3.7rem;   }
+[dir="rtl"] .text-\[5rem\]        { font-size: 3.9rem;   }
+[dir="rtl"] .text-\[5\.5rem\]     { font-size: 4.3rem;   }
+[dir="rtl"] .text-\[5\.75rem\]    { font-size: 4.5rem;   }
+[dir="rtl"] .text-\[6rem\]        { font-size: 4.7rem;   }
+
+/* Loosen line-height for very large headlines so descenders (like ي، ج)
+   don't get clipped at leading-[0.9] / leading-[0.95]. */
+[dir="rtl"] .leading-\[0\.9\],
+[dir="rtl"] .leading-\[0\.95\],
+[dir="rtl"] .leading-\[1\]        { line-height: 1.25; }
+[dir="rtl"] .leading-\[1\.05\]    { line-height: 1.3; }
+
+/* Loosen letter-spacing for tracking-widest / arbitrary-value tracked
+   eyebrows. Those trackings are designed for Latin uppercase; Arabic has
+   no case system and the extra tracking makes joined letters look
+   broken. Zero it out entirely so joined letterforms stay clean. */
+[dir="rtl"] .tracking-widest,
+[dir="rtl"] .tracking-wider,
+[dir="rtl"] .tracking-wide,
+[dir="rtl"] [class*="tracking-\["] {
+  letter-spacing: 0 !important;
+}
+
+/* Uppercase transformations do nothing to Arabic, but the intent is
+   emphasis — swap for a weight bump so the visual hierarchy stays. */
+[dir="rtl"] .uppercase {
+  text-transform: none;
+  font-weight: 700;
+}
+
+/* Bump font-weight of small labels so Arabic doesn't feel spindly.
+   Cairo at weight 500 reads much stronger than at 400 for eyebrow-style
+   text without overpowering the layout. */
+[dir="rtl"] .text-xs,
+[dir="rtl"] .text-\[10px\],
+[dir="rtl"] .text-\[11px\] {
+  font-weight: 600;
 }
 
 /* Mirror unicode arrow glyphs that the CMS author wrote left-to-right.

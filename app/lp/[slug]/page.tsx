@@ -245,7 +245,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
             )}
             <a
               href="#lp-form"
-              className="inline-block bg-[#DFBA67] text-[#33314E] px-8 py-4 rounded-full font-bold text-lg hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-[#DFBA67]/30"
+              className="inline-block bg-[#DFBA67] text-[#0E1635] px-8 py-4 rounded-full font-bold text-lg hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-[#DFBA67]/30"
             >
               {L(lp.hero?.ctaText) || 'Get Started'}
             </a>
@@ -301,7 +301,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {lp.pains.items.map((p, i) => (
-                <div key={i} className="bg-[#33314E]/40 border border-white/10 rounded-2xl p-7">
+                <div key={i} className="bg-[#0E1635]/40 border border-white/10 rounded-2xl p-7">
                   <h3 className="font-bold text-lg mb-2 text-white">{L(p.title)}</h3>
                   <p className="text-[#8A95A5] text-sm leading-relaxed">{L(p.description)}</p>
                 </div>
@@ -334,7 +334,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
               {lp.includes.items.map((it, i) => (
                 <div key={i} className="bg-white/[0.04] border border-white/10 rounded-2xl p-7 hover:bg-white/[0.06] transition">
                   <div className="flex items-start gap-4">
-                    <span className="flex-shrink-0 w-10 h-10 rounded-full bg-[#DFBA67] text-[#33314E] font-bold flex items-center justify-center">
+                    <span className="flex-shrink-0 w-10 h-10 rounded-full bg-[#DFBA67] text-[#0E1635] font-bold flex items-center justify-center">
                       ✓
                     </span>
                     <div>
@@ -486,7 +486,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
                   className={`relative rounded-3xl p-8 border ${tier.popular ? 'bg-[#DFBA67]/10 border-[#DFBA67]' : 'bg-white/[0.04] border-white/10'}`}
                 >
                   {tier.popular && (
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#DFBA67] text-[#33314E] px-3 py-1 rounded-full text-xs font-bold uppercase">
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#DFBA67] text-[#0E1635] px-3 py-1 rounded-full text-xs font-bold uppercase">
                       {locale === 'ar' ? 'الأكثر شعبية' : 'Most Popular'}
                     </span>
                   )}
@@ -508,7 +508,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
                   </ul>
                   <a
                     href="#lp-form"
-                    className={`block text-center rounded-full font-bold py-3 px-6 transition ${tier.popular ? 'bg-[#DFBA67] text-[#33314E] hover:scale-[1.02]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                    className={`block text-center rounded-full font-bold py-3 px-6 transition ${tier.popular ? 'bg-[#DFBA67] text-[#0E1635] hover:scale-[1.02]' : 'bg-white/10 text-white hover:bg-white/20'}`}
                   >
                     {L(tier.ctaText) || (locale === 'ar' ? 'ابدأ الآن' : 'Get Started')}
                   </a>
@@ -596,7 +596,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
 
       {/* ─── Final CTA banner ─── */}
       {(L(lp.finalCta?.title) || L(lp.finalCta?.buttonText)) && (
-        <section className="bg-[#DFBA67] text-[#33314E] py-20 px-6">
+        <section className="bg-[#DFBA67] text-[#0E1635] py-20 px-6">
           <div className="max-w-4xl mx-auto text-center">
             {L(lp.finalCta?.eyebrow) && (
               <p className="uppercase tracking-widest text-sm font-bold mb-3">
@@ -611,7 +611,7 @@ export default async function LandingPageRoute({ params }: { params: Promise<{ s
             )}
             <a
               href="#lp-form"
-              className="inline-block bg-[#33314E] text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-black/30"
+              className="inline-block bg-[#0E1635] text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-black/30"
             >
               {L(lp.finalCta?.buttonText) || (locale === 'ar' ? 'ابدأ الآن' : 'Get Started')}
             </a>

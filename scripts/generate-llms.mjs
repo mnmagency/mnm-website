@@ -112,7 +112,7 @@ function buildLlmsTxt(data) {
   const description = clean(
     localize(data.homepage?.subtitle, 'en') ||
       localize(data.navigation?.footerDescription, 'en') ||
-      'AI-driven marketing agency in Qatar focused on measurable business growth — websites, SEO, social, paid media, branding.'
+      "M&M Marketing is a full-service marketing agency in Doha, Qatar — trusted by leading brands for SEO, web development, social media management, branding, paid ads, and videography."
   )
 
   const lines = []
@@ -138,7 +138,7 @@ function buildLlmsTxt(data) {
   lines.push(bilingualLink('Blog', '/blog'))
   lines.push(bilingualLink('FAQs', '/faqs'))
   lines.push(bilingualLink('Contact', '/contact'))
-  lines.push(bilingualLink('Get an AI Growth Strategy', '/get-strategy'))
+  lines.push(bilingualLink('Get Your Free Quote', '/get-strategy'))
   lines.push(bilingualLink('Free SEO Audit', '/seo-audit'))
   lines.push('')
 

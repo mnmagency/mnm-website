@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
+import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import "./globals.css";
+import { client } from "@/lib/sanity";
 import { dir, htmlLang } from "@/lib/locale";
 import { getLocale } from "@/lib/locale-server";
 
@@ -20,11 +20,67 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "M&M Marketing | AI-Driven Growth Partner in Qatar",
-  description:
-    "M&M Marketing helps brands in Qatar grow through websites, SEO, social media, paid media, branding, and AI-driven marketing systems.",
-};
+// Cairo — modern, geometric Arabic UI font that reads well at every size
+// and works beautifully alongside Latin text. Bundles both scripts so we
+// can use the same font family for RTL and LTR fallback.
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+// ─── Site-wide fallback metadata ────────────────────────────────────
+// Individual pages override title/description via their own
+// generateMetadata(). Verification tokens are pulled from Sanity's
+// siteSettings singleton so the editor can paste new tokens without a
+// code deploy.
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await client.fetch<{
+    googleSiteVerification?: string
+    bingSiteVerification?: string
+    yandexSiteVerification?: string
+    facebookDomainVerification?: string
+  } | null>(`
+    *[_type == "siteSettings"][0]{
+      googleSiteVerification,
+      bingSiteVerification,
+      yandexSiteVerification,
+      facebookDomainVerification
+    }
+  `)
+
+  return {
+    metadataBase: new URL('https://mnmagency.com'),
+    title: {
+      default: 'Marketing Agency in Qatar | SEO, Web Development & Social Media | M&M',
+      template: '%s | M&M Marketing Qatar',
+    },
+    description:
+      'M&M Marketing is a leading marketing agency in Qatar. SEO, web development, social media management, branding, and paid ads for brands in Doha and across Qatar. Free consultation.',
+    verification: {
+      google: s?.googleSiteVerification,
+      yandex: s?.yandexSiteVerification,
+      other: {
+        'msvalidate.01': s?.bingSiteVerification || '',
+        'facebook-domain-verification': s?.facebookDomainVerification || '',
+      },
+    },
+    alternates: {
+      canonical: 'https://mnmagency.com',
+      languages: {
+        en: 'https://mnmagency.com',
+        ar: 'https://mnmagency.com/ar',
+      },
+    },
+    openGraph: {
+      type: 'website',
+      siteName: 'M&M Marketing',
+      locale: 'en_US',
+      alternateLocale: 'ar_QA',
+    },
+  }
+}
 
 export default async function RootLayout({
   children,
@@ -37,30 +93,9 @@ export default async function RootLayout({
     <html
       lang={htmlLang(locale)}
       dir={dir(locale)}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} h-full antialiased`}
     >
-      <head>
-        <Script
-          id="gtm-script"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-5DFBSS7Q');`,
-          }}
-        />
-      </head>
       <body className="min-h-full">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-5DFBSS7Q"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
         {children}
       </body>
     </html>

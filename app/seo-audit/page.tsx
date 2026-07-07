@@ -50,15 +50,15 @@ export default async function SeoAuditPage() {
   } : undefined
 
   return (
-    <PageLayout variant="light">
+    <PageLayout>
       <section className="max-w-3xl mx-auto px-6 pt-40 pb-20 text-center">
         {eyebrow && (
           <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{eyebrow}</p>
         )}
 
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-[#33314E]">{title}</h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">{title}</h1>
 
-        <p className="text-lg text-[#6B7280] leading-relaxed mb-12">{subtitle}</p>
+        <p className="text-lg text-[#8A95A5] leading-relaxed mb-12">{subtitle}</p>
 
         <SeoAuditWidget
           widgetTitle={widgetTitle}

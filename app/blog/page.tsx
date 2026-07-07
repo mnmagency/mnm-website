@@ -29,7 +29,7 @@ export async function generateMetadata() {
   const seo = page?.seo
   const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'Insights | M&M Marketing Qatar'
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
-    'Practical thinking from M&M Marketing on websites, SEO, social media, AI-driven growth, and revenue systems.'
+    'Marketing insights from M&M Marketing — Qatar\'s trusted marketing agency for SEO, web development, social media management, branding, and paid ads.'
 
   return {
     title, description,
@@ -57,7 +57,7 @@ export default async function BlogPage() {
   const L = (f: LocaleField) => localize(f, locale)
   const eyebrow  = L(page?.eyebrow)  || 'Insights'
   const title    = L(page?.title)    || 'Growth, marketing, and digital strategy insights.'
-  const subtitle = L(page?.subtitle) || 'Practical thinking from M&M Marketing on websites, SEO, social media, AI-driven growth, and revenue systems.'
+  const subtitle = L(page?.subtitle) || 'Marketing insights from M&M Marketing — Qatar\'s trusted marketing agency for SEO, web development, social media management, branding, and paid ads.'
 
   return (
     <PageLayout>

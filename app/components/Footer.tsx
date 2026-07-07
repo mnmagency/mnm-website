@@ -17,6 +17,9 @@ export default async function Footer() {
       logo{
         asset->{url}
       },
+      logoDark{
+        asset->{url}
+      },
       copyright,
       contactColumnTitle,
       footerColumns[]{
@@ -65,39 +68,39 @@ export default async function Footer() {
       ]
 
   return (
-    <footer className="bg-[#25243A] text-white border-t border-white/10">
+    <footer className="bg-white text-[#0E1635]">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-4 gap-10">
 
-          {/* BRAND */}
+          {/* BRAND — prefer the dark-variant logo for white bg, fall back to primary */}
           <div className="lg:col-span-2">
-            {nav?.logo?.asset?.url ? (
+            {(nav?.logoDark?.asset?.url || nav?.logo?.asset?.url) ? (
               <img
-                src={nav.logo.asset.url}
+                src={nav?.logoDark?.asset?.url || nav?.logo?.asset?.url}
                 alt={brand}
                 className="h-14 w-auto mb-6"
               />
             ) : (
-              <h3 className="text-[#DFBA67] text-2xl font-bold mb-4">
+              <h3 className="text-[#0E1635] text-2xl font-bold mb-4">
                 {brand}
               </h3>
             )}
 
             {footerDescription && (
-              <p className="text-white/60 max-w-md leading-relaxed text-sm">
+              <p className="text-[#475569] max-w-md leading-relaxed text-sm">
                 {footerDescription}
               </p>
             )}
 
             <div className="mt-6 flex gap-4">
               {nav?.phone && (
-                <a href={`tel:${nav.phone}`} className="text-[#DFBA67] text-sm hover:opacity-80">
+                <a href={`tel:${nav.phone}`} className="text-[#DFBA67] text-sm font-bold hover:opacity-80">
                   {locale === 'ar' ? 'اتصل' : 'Call'}
                 </a>
               )}
 
               {nav?.email && (
-                <a href={`mailto:${nav.email}`} className="text-[#DFBA67] text-sm hover:opacity-80">
+                <a href={`mailto:${nav.email}`} className="text-[#DFBA67] text-sm font-bold hover:opacity-80">
                   {locale === 'ar' ? 'البريد' : 'Email'}
                 </a>
               )}
@@ -109,11 +112,11 @@ export default async function Footer() {
             <div className="grid grid-cols-2 gap-10">
               {footerColumns.map((column: FooterColumn, index: number) => (
                 <div key={index}>
-                  <h4 className="text-[#DFBA67] font-bold mb-5">
+                  <h4 className="text-[#0E1635] font-bold mb-5">
                     {localize(column.columnTitle, locale)}
                   </h4>
 
-                  <div className="flex flex-col gap-3 text-white/60">
+                  <div className="flex flex-col gap-3 text-[#475569]">
                     {column?.links?.map((item: FooterLink, itemIndex: number) => (
                       <a
                         key={itemIndex}
@@ -131,11 +134,11 @@ export default async function Footer() {
 
           {/* CONTACT ALWAYS VISIBLE */}
           <div>
-            <h4 className="text-[#DFBA67] font-bold mb-5">
+            <h4 className="text-[#0E1635] font-bold mb-5">
               {contactColumnTitle}
             </h4>
 
-            <div className="flex flex-col gap-3 text-white/60">
+            <div className="flex flex-col gap-3 text-[#475569]">
               {address && <p>{address}</p>}
 
               {nav?.phone && (
@@ -153,19 +156,20 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row md:items-center justify-between gap-4 text-white/40 text-sm">
+        <div className="border-t border-black/10 mt-12 pt-6 flex flex-col md:flex-row md:items-center justify-between gap-4 text-[#0E1635]/60 text-sm">
           <p>{copyright}</p>
 
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <SocialIcons
               socials={nav?.socials}
               showLabel
-              labelClassName="text-sm text-white/60"
+              labelClassName="text-sm text-[#475569]"
+              linkClassName="text-[#DFBA67] hover:text-[#0E1635] transition-colors"
             />
 
             <a
               href={ctaLink}
-              className="text-[#DFBA67] font-bold"
+              className="text-[#DFBA67] font-bold hover:opacity-80"
             >
               {ctaText}
             </a>

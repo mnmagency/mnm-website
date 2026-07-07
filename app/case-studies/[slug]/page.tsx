@@ -95,7 +95,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
   const resultsHeading = locale === 'ar' ? 'أثر قابل للقياس من خلال الاستراتيجية والتنفيذ.' : 'Measurable impact delivered through strategy and execution.'
   const ctaTitle       = locale === 'ar' ? 'تريد نتائج مماثلة؟' : 'Want results like this?'
   const ctaText        = locale === 'ar' ? 'لنبني نظام نمو مصمم حول أهداف عملك وسوقك وإيراداتك.' : "Let's build a growth system designed around your business goals, market, and revenue targets."
-  const ctaButtonText  = locale === 'ar' ? 'احصل على استراتيجيتك الآن' : 'Get Your AI Growth Strategy'
+  const ctaButtonText  = locale === 'ar' ? 'احصل على استشارة مجانية' : 'Get Free Consultation'
   const backLabel      = locale === 'ar' ? '→ العودة إلى دراسات الحالة' : '← Back to Case Studies'
 
   return (
@@ -126,7 +126,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       {/* IMAGE */}
       {caseStudy?.image?.asset?.url && (
         <section className="max-w-7xl mx-auto px-6 pb-24">
-          <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 h-[520px]">
+          <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 h-[280px] sm:h-[380px] lg:h-[520px]">
             <Image
               src={caseStudy.image.asset.url}
               alt={title || 'Case study image'}
@@ -157,7 +157,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           )}
 
           {results && (
-            <div className="bg-[#DFBA67] text-[#33314E] rounded-3xl p-8">
+            <div className="bg-[#DFBA67] text-[#0E1635] rounded-3xl p-8">
               <p className="uppercase tracking-widest mb-3 font-bold">{labelResult}</p>
               <h2 className="text-2xl font-bold">{results}</h2>
             </div>
@@ -184,7 +184,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
       {/* RESULTS */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-white text-[#33314E] rounded-[2rem] p-10 md:p-16 shadow-2xl shadow-black/20">
+        <div className="bg-white text-[#0E1635] rounded-[2rem] p-10 md:p-16 shadow-2xl shadow-black/20">
           <p className="text-[#DFBA67] uppercase tracking-widest mb-4">{resultsLabel}</p>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">{resultsHeading}</h2>
           <p className="text-lg text-[#6B7280] leading-relaxed whitespace-pre-line max-w-4xl">{results}</p>
@@ -193,12 +193,12 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-[#DFBA67] text-[#33314E] rounded-[2rem] p-10 md:p-16 text-center shadow-2xl shadow-black/20">
+        <div className="bg-[#DFBA67] text-[#0E1635] rounded-[2rem] p-10 md:p-16 text-center shadow-2xl shadow-black/20">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">{ctaTitle}</h2>
-          <p className="text-lg text-[#33314E]/80 max-w-3xl mx-auto mb-8">{ctaText}</p>
+          <p className="text-lg text-[#0E1635]/80 max-w-3xl mx-auto mb-8">{ctaText}</p>
           <a
             href={localizePath('/get-strategy', locale)}
-            className="inline-block bg-[#33314E] text-white px-10 py-4 rounded-full font-bold hover:scale-[1.03] transition-all duration-300"
+            className="inline-block bg-[#0E1635] text-white px-10 py-4 rounded-full font-bold hover:scale-[1.03] transition-all duration-300"
           >
             {ctaButtonText}
           </a>

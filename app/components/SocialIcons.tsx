@@ -11,6 +11,12 @@ type Props = {
   className?: string
   iconClassName?: string
   labelClassName?: string
+  /**
+   * Override the anchor's className. Use this when the icons sit on a
+   * light background (e.g. the white footer) — the default is tuned for
+   * dark backgrounds like the header.
+   */
+  linkClassName?: string
 }
 
 export default function SocialIcons({
@@ -19,6 +25,7 @@ export default function SocialIcons({
   className = '',
   iconClassName = 'w-5 h-5',
   labelClassName = 'text-sm text-white/70',
+  linkClassName = 'text-white/70 hover:text-[#DFBA67] transition-colors',
 }: Props) {
   if (!socials) return null
 
@@ -78,7 +85,7 @@ export default function SocialIcons({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={item.label}
-          className="text-white/70 hover:text-[#DFBA67] transition-colors"
+          className={linkClassName}
         >
           {item.svg}
         </a>

@@ -53,6 +53,13 @@ const legacyRedirects = [
 ]
 
 const nextConfig: NextConfig = {
+  // Tell Turbopack the project root is this directory (not the home folder).
+  // Silences the "multiple lockfiles" warning when there's a stray
+  // package-lock.json in ~ from an old npm install.
+  turbopack: {
+    root: process.cwd(),
+  },
+
   images: {
     remotePatterns: [
       {

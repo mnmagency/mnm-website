@@ -117,7 +117,7 @@ export default async function FAQsPage() {
               <div className="space-y-4">
                 {group.faqs.map((faq) => (
                   <details key={faq._id} className="group rounded-2xl bg-white border border-black/5 shadow-lg shadow-black/5 overflow-hidden">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-lg md:text-xl font-bold text-[#33314E]">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-lg md:text-xl font-bold text-[#0E1635]">
                       <span>{L(faq.question)}</span>
                       <span className="text-[#DFBA67] text-2xl transition-transform duration-300 group-open:rotate-45">+</span>
                     </summary>

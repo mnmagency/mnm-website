@@ -53,9 +53,9 @@ export async function generateMetadata() {
   `)
   const seo = form?.seo
   return {
-    title: localize(seo?.metaTitle, locale) || localize(form?.title, locale) || 'Get Your AI Growth Strategy | M&M Marketing Qatar',
+    title: localize(seo?.metaTitle, locale) || localize(form?.title, locale) || 'Free Marketing Consultation in Qatar | M&M Marketing',
     description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale) ||
-      'Tell M&M Marketing about your business and receive a tailored AI-driven growth strategy for Qatar.',
+      "Book a free marketing consultation with Qatar's leading marketing agency. Tell us about your business and get a tailored marketing plan within 24 hours.",
     openGraph: {
       title: localize(seo?.metaTitle, locale) || localize(form?.title, locale),
       description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale),
@@ -93,7 +93,7 @@ export default async function GetStrategy() {
             )}
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-[1.05]">
-              {L(form?.title) || 'Get Your AI Growth Strategy'}
+              {L(form?.title) || 'Get Your Free Marketing Consultation'}
             </h1>
 
             <p className="text-lg text-[#8A95A5] leading-relaxed">
@@ -111,7 +111,7 @@ export default async function GetStrategy() {
                 <div className="space-y-4 pt-2">
                   {form.processSteps.map((step, index) => (
                     <div key={index} className="flex gap-4">
-                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#DFBA67] text-[#33314E] font-bold flex items-center justify-center">
+                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#DFBA67] text-[#0E1635] font-bold flex items-center justify-center">
                         {index + 1}
                       </span>
                       <div>

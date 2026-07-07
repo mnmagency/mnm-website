@@ -69,7 +69,7 @@ export async function generateMetadata() {
   return {
     title: localize(seo?.metaTitle, locale) || 'Contact M&M Marketing Qatar',
     description: localize(seo?.metaDescription, locale) ||
-      'Contact M&M Marketing in Qatar for websites, SEO, social media, branding, and AI-driven growth.',
+      "Contact M&M Marketing — Qatar's trusted marketing agency in Doha. SEO, web development, social media, branding, paid ads, and videography. Free consultation.",
     openGraph: {
       title: localize(seo?.metaTitle, locale),
       description: localize(seo?.metaDescription, locale),
@@ -95,7 +95,7 @@ export default async function ContactPage() {
 
   const L = (f: LocaleField) => localize(f, locale)
   const eyebrow             = L(page?.eyebrow)             || 'Contact M&M'
-  const title               = L(page?.title)               || "Let's build your growth system."
+  const title               = L(page?.title)               || "Contact Qatar's Trusted Marketing Agency"
   const subtitle            = L(page?.subtitle)
   const contactDetailsTitle = L(page?.contactDetailsTitle) || 'Contact Details'
   const labelWorkingHours   = L(page?.detailLabels?.workingHours) || 'Working Hours:'
@@ -111,7 +111,7 @@ export default async function ContactPage() {
   const ctaSubTagline       = L(page?.ctaSubTagline)       || "Let's achieve it together."
   const ctaTitle            = L(page?.ctaTitle)            || 'Ready to Turn Your Marketing Into Revenue?'
   const ctaText             = L(page?.ctaText)             || "Let's build a strategy focused on real results, not just impressions."
-  const ctaButtonText       = L(page?.ctaButtonText)       || 'Get Your AI Growth Strategy'
+  const ctaButtonText       = L(page?.ctaButtonText)       || 'Get Free Consultation'
   const ctaButtonLink       = localizePath(page?.ctaButtonLink || '/get-strategy', locale)
   const ctaButtonNote       = L(page?.ctaButtonNote)       || 'No commitment. Strategy call within 24 hours.'
 
@@ -154,7 +154,7 @@ export default async function ContactPage() {
                   href={page.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-3 bg-[#DFBA67] text-[#33314E] px-7 py-3 rounded-full font-bold hover:scale-[1.03] transition-all duration-300"
+                  className="inline-block mt-3 bg-[#DFBA67] text-[#0E1635] px-7 py-3 rounded-full font-bold hover:scale-[1.03] transition-all duration-300"
                 >
                   {openLocationButton}
                 </a>
@@ -166,7 +166,7 @@ export default async function ContactPage() {
 
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-          <div className="bg-white text-[#33314E] rounded-[2rem] p-8 md:p-10 shadow-2xl shadow-black/20">
+          <div className="bg-white text-[#0E1635] rounded-[2rem] p-8 md:p-10 shadow-2xl shadow-black/20">
             <p className="text-[#DFBA67] uppercase tracking-widest mb-3 font-bold">{formEyebrow}</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">{formTitle}</h2>
             <p className="text-[#6B7280] mb-8 leading-relaxed">{formSubtitle}</p>
@@ -207,27 +207,27 @@ export default async function ContactPage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-[#DFBA67] text-[#33314E] rounded-[2rem] px-8 py-8 md:px-10 md:py-9 shadow-2xl shadow-black/20">
+        <div className="bg-[#DFBA67] text-[#0E1635] rounded-[2rem] px-8 py-8 md:px-10 md:py-9 shadow-2xl shadow-black/20">
           <div className="grid lg:grid-cols-[1fr_1.8fr_1fr] gap-6 items-center">
             <div>
               <p className="text-xl font-bold mb-1">{ctaTagline}</p>
-              <p className="text-sm text-[#33314E]/70">{ctaSubTagline}</p>
+              <p className="text-sm text-[#0E1635]/70">{ctaSubTagline}</p>
             </div>
 
-            <div className="lg:border-x lg:border-[#33314E]/20 lg:px-8 text-center">
+            <div className="lg:border-x lg:border-[#0E1635]/20 lg:px-8 text-center">
               <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-3">{ctaTitle}</h2>
-              <p className="text-base text-[#33314E]/75 max-w-2xl mx-auto">{ctaText}</p>
+              <p className="text-base text-[#0E1635]/75 max-w-2xl mx-auto">{ctaText}</p>
             </div>
 
             <div className="text-center">
               <a
                 href={ctaButtonLink}
-                className="inline-block bg-[#33314E] text-white px-7 py-3 rounded-full font-bold text-sm hover:scale-[1.03] transition-all duration-300"
+                className="inline-block bg-[#0E1635] text-white px-7 py-3 rounded-full font-bold text-sm hover:scale-[1.03] transition-all duration-300"
               >
                 {ctaButtonText}
               </a>
               {ctaButtonNote && (
-                <p className="text-xs text-[#33314E]/65 mt-3">{ctaButtonNote}</p>
+                <p className="text-xs text-[#0E1635]/65 mt-3">{ctaButtonNote}</p>
               )}
             </div>
           </div>

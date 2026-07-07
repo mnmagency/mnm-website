@@ -144,7 +144,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     `${localize(post?.title, locale) || 'Blog'} | M&M Marketing Qatar`
   const description = localize(seo?.metaDescription, locale) ||
     localize(post?.excerpt, locale) ||
-    'Insights on marketing, SEO, websites, and AI-driven growth in Qatar.'
+    "Marketing insights for Qatar businesses — SEO, web development, social media, branding, and paid ads from Doha's trusted marketing agency."
 
   return {
     title, description,
@@ -259,7 +259,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </div>
 
         {post?.image?.asset?.url && (
-          <div className="relative w-full h-[460px] rounded-3xl overflow-hidden mb-12">
+          <div className="relative w-full h-[240px] sm:h-[320px] lg:h-[460px] rounded-3xl overflow-hidden mb-12">
             <Image
               src={post.image.asset.url}
               alt={title || 'Blog featured image'}
@@ -308,7 +308,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       </article>
 
       {related.length > 0 && (
-        <section className="bg-white text-[#33314E]">
+        <section className="bg-white text-[#0E1635]">
           <div className="max-w-7xl mx-auto px-6 py-20">
             <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
               {locale === 'ar' ? 'مقالات ذات صلة' : 'Related Articles'}
@@ -343,7 +343,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
                     <div className="p-6">
                       {rCategory && (
-                        <p className="inline-block bg-[#F0EEF8] text-[#33314E] px-3 py-1 rounded-md text-xs font-bold mb-4">
+                        <p className="inline-block bg-[#F0EEF8] text-[#0E1635] px-3 py-1 rounded-md text-xs font-bold mb-4">
                           {rCategory}
                         </p>
                       )}

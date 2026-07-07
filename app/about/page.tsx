@@ -86,7 +86,7 @@ export default async function AboutPage() {
   const principlesTitle    = L(page?.principlesTitle)    || 'How we think. How we execute.'
   const ctaTitle           = L(page?.ctaTitle)
   const ctaText            = L(page?.ctaText)
-  const ctaButtonText      = L(page?.ctaButtonText)      || 'Get Your AI Growth Strategy'
+  const ctaButtonText      = L(page?.ctaButtonText)      || 'Get Free Consultation'
   const ctaButtonLink      = localizePath(page?.ctaButtonLink || '/get-strategy', locale)
 
   return (
@@ -100,7 +100,7 @@ export default async function AboutPage() {
         <p className="text-lg text-[#8A95A5] max-w-3xl">{subtitle}</p>
 
         {page?.heroImage?.asset?.url && (
-          <div className="relative mt-12 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 h-[500px]">
+          <div className="relative mt-12 rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 h-[280px] sm:h-[380px] lg:h-[500px]">
             <Image
               src={page.heroImage.asset.url}
               alt={heroImageAlt}
@@ -157,10 +157,10 @@ export default async function AboutPage() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-[#DFBA67] text-[#33314E] rounded-[2rem] p-10 md:p-16 text-center">
+        <div className="bg-[#DFBA67] text-[#0E1635] rounded-[2rem] p-10 md:p-16 text-center">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">{ctaTitle}</h2>
-          <p className="text-lg text-[#33314E]/80 max-w-3xl mx-auto mb-8">{ctaText}</p>
-          <a href={ctaButtonLink} className="inline-block bg-[#33314E] text-white px-10 py-4 rounded-full font-bold">
+          <p className="text-lg text-[#0E1635]/80 max-w-3xl mx-auto mb-8">{ctaText}</p>
+          <a href={ctaButtonLink} className="inline-block bg-[#0E1635] text-white px-10 py-4 rounded-full font-bold">
             {ctaButtonText}
           </a>
         </div>
