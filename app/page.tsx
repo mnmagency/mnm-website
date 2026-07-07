@@ -244,9 +244,9 @@ export default async function Home() {
             'radial-gradient(circle at 12% 25%, #DFBA67 0%, transparent 32%), radial-gradient(circle at 88% 75%, #DFBA67 0%, transparent 38%)',
         }} />
 
-        {/* Video / Image on top — full width rounded card */}
-        <div className="relative z-10 mx-6 mb-10">
-          <div className="relative rounded-[2rem] overflow-hidden aspect-[4/3] shadow-2xl shadow-black/50 bg-[#0E1635] border border-[#DFBA67]/40">
+        {/* Video / Image on top — full width rounded card, fixed height */}
+        <div className="relative z-10 mx-6 mb-10 h-[260px]">
+          <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-black/50 bg-[#0E1635] border border-[#DFBA67]/40">
             {homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
               <video
                 src={homepage.heroVideoUrl}
@@ -254,7 +254,8 @@ export default async function Home() {
                 muted
                 loop
                 playsInline
-                className="w-full h-full object-cover"
+                poster={homepage?.heroImage?.asset?.url}
+                className="absolute inset-0 w-full h-full object-cover"
               />
             ) : homepage?.heroImage?.asset?.url ? (
               <Image
@@ -267,7 +268,7 @@ export default async function Home() {
               />
             ) : (
               <div
-                className="w-full h-full animate-[spin_60s_linear_infinite]"
+                className="absolute inset-0 animate-[spin_60s_linear_infinite]"
                 style={{
                   background:
                     'conic-gradient(from 0deg, #DFBA67, #DFBA67, #DFBA67, #DFBA67)',
