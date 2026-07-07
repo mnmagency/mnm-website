@@ -248,7 +248,7 @@ export default async function Home() {
            This prevents the Arabic headline colliding with the video. */}
         <div
           aria-hidden="true"
-          className={`absolute top-1/2 -translate-y-1/2 ${isRtl ? 'left-0' : 'right-0'} w-[75%] sm:w-[64%] md:w-[58%] lg:w-[56%] xl:w-[54%] h-[88%] sm:h-[92%] lg:h-[95%] z-0 pointer-events-none`}
+          className={`hidden sm:block absolute top-1/2 -translate-y-1/2 ${isRtl ? 'left-0' : 'right-0'} w-[64%] md:w-[58%] lg:w-[56%] xl:w-[54%] h-[92%] lg:h-[95%] z-0 pointer-events-none`}
         >
           {/* Outer glow — bleeds away from the curved edge */}
           <div
@@ -711,7 +711,7 @@ export default async function Home() {
                   return (
                     <div key={index}>
                       <div className="flex items-start gap-3 mb-3">
-                        <h3 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold text-white tracking-tight leading-none">
+                        <h3 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-bold text-white tracking-tight leading-none break-words">
                           {item.number}
                         </h3>
                         <span
