@@ -905,7 +905,7 @@ export default async function Home() {
             <div className="grid lg:grid-cols-4 gap-10 lg:gap-12 items-start">
               {/* Left column — headline + CTA */}
               <div className="lg:col-span-1">
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#0E1635] tracking-[-0.02em] leading-[0.95] uppercase mb-10">
+                <h2 className="text-3xl md:text-4xl lg:text-[2.25rem] xl:text-[2.75rem] font-bold text-[#0E1635] tracking-[-0.02em] leading-[1] uppercase mb-10 break-words">
                   {blogTitle}
                 </h2>
                 <Link
