@@ -1,7 +1,10 @@
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
 import FloatingAuditCta from '@/app/components/FloatingAuditCta'
+import FloatingWhatsAppCta, { type WhatsAppRoute } from '@/app/components/FloatingWhatsAppCta'
 import TrackingScripts from '@/app/components/TrackingScripts'
+import { localize } from '@/lib/locale'
+import { getLocale } from '@/lib/locale-server'
 import Script from 'next/script'
 import { client } from '@/lib/sanity'
 
@@ -192,18 +195,50 @@ export default async function PageLayout({
       ? 'bg-white text-[#0E1635]'
       : 'bg-[#0E1635] text-white'
 
+  const locale = await getLocale()
+
   // Pull the brand/contact fields once so the JSON-LD stays in sync with what
   // Header and Footer render. Sanity returns null cleanly if any field is missing.
-  const nav = await client.fetch<NavBrand | null>(`
+  // Also fetches the WhatsApp routing config in the same query.
+  const nav = await client.fetch<
+    (NavBrand & {
+      whatsapp?: {
+        enabled?: boolean
+        defaultNumber?: string
+        defaultMessage?: { en?: string; ar?: string } | string
+        routes?: Array<{
+          label?: string
+          number?: string
+          message?: { en?: string; ar?: string } | string
+          matchPaths?: string[]
+        }>
+      }
+    }) | null
+  >(`
     *[_type == "navigation"][0]{
       brandName,
       logo{ asset->{url} },
       phone,
       email,
       address,
-      socials{ instagram, facebook, x, youtube }
+      socials{ instagram, facebook, x, youtube },
+      whatsapp{
+        enabled, defaultNumber, defaultMessage,
+        routes[]{ label, number, message, matchPaths }
+      }
     }
   `)
+
+  // Localize the WhatsApp messages so pre-filled text matches the visitor's locale.
+  const wa = nav?.whatsapp
+  const waRoutes: WhatsAppRoute[] = (wa?.routes || []).map((r) => ({
+    label: r.label,
+    number: r.number,
+    message: localize(r.message, locale) || undefined,
+    matchPaths: r.matchPaths,
+  }))
+  const waDefaultMessage = localize(wa?.defaultMessage, locale) || undefined
+  const waEnabled = wa?.enabled !== false // default to enabled if the field is missing
 
   const organizationSchema = buildOrganizationSchema(nav)
 
@@ -244,6 +279,13 @@ export default async function PageLayout({
 
         <Header />
         <FloatingAuditCta />
+        <FloatingWhatsAppCta
+          enabled={waEnabled}
+          defaultNumber={wa?.defaultNumber}
+          defaultMessage={waDefaultMessage}
+          routes={waRoutes}
+          ariaLabel={locale === 'ar' ? 'تواصل عبر واتساب' : 'Chat on WhatsApp'}
+        />
         {children}
         <Footer />
       </main>
