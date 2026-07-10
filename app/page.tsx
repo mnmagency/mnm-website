@@ -73,6 +73,7 @@ type Homepage = {
   heroMediaType?: 'image' | 'video'
   heroImage?: ImageRef
   heroVideoUrl?: string
+  finalCtaImage?: ImageRef
   proofItems?: ProofItem[]
   proofEyebrow?: LocaleField
   systemEyebrow?: LocaleField
@@ -174,7 +175,8 @@ export default async function Home() {
         blogPill, blogTitle, blogDescription, blogLinkText,
         clientsBannerTitle,
         clientLogos[]{ name, logo{ asset->{url} } },
-        finalCtaTitle, finalCtaText, finalCtaButtonText, finalCtaButtonLink
+        finalCtaTitle, finalCtaText, finalCtaButtonText, finalCtaButtonLink,
+        finalCtaImage{ asset->{url} }
       },
       "services": *[_type == "service"]{ title, description, slug, image{ asset->{url} } },
       "caseStudies": *[_type == "caseStudy"] | order(_createdAt desc)[0...6]{
@@ -1100,9 +1102,9 @@ export default async function Home() {
                 so the image's middle sits on the navy/white boundary. Also
                 bleeds 10 % into the white top via translate-y. */}
             <div className={`hidden lg:block absolute top-0 ${isRtl ? 'left-0 -translate-x-1/2' : 'right-0 translate-x-1/2'} w-[38%] aspect-square -translate-y-[10%] z-20`}>
-              {(homepage?.heroImage?.asset?.url || homepage?.aboutImage?.asset?.url) ? (
+              {(homepage?.finalCtaImage?.asset?.url || homepage?.heroImage?.asset?.url || homepage?.aboutImage?.asset?.url) ? (
                 <Image
-                  src={(homepage.heroImage?.asset?.url || homepage.aboutImage?.asset?.url) as string}
+                  src={(homepage.finalCtaImage?.asset?.url || homepage.heroImage?.asset?.url || homepage.aboutImage?.asset?.url) as string}
                   alt={locale === 'ar' ? 'أطلق روح التحدي' : 'Dare to unleash your challenger spirit'}
                   fill
                   sizes="40vw"

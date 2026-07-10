@@ -94,6 +94,7 @@ export default async function RootLayout({
       lang={htmlLang(locale)}
       dir={dir(locale)}
       className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full">
         {children}
