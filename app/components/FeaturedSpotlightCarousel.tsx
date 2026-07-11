@@ -130,7 +130,9 @@ export default function FeaturedSpotlightCarousel({
                   // screen-reader access AND focusability of children. Fixes the
                   // Lighthouse "ARIA hidden element must not contain focusable
                   // descendants" audit for the case-study links inside each slide.
-                  {...(!isActive && { inert: '' })}
+                  // React 19+ typings define `inert` as boolean; passing
+                  // `undefined` when active leaves the attribute off entirely.
+                  inert={!isActive || undefined}
                   className={`absolute inset-0 transition-opacity duration-700 flex flex-col ${
                     isActive
                       ? 'opacity-100 pointer-events-auto'
