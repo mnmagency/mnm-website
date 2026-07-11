@@ -249,24 +249,27 @@ export default async function Home() {
         {/* Video / Image on top — full width rounded card, fixed height */}
         <div className="relative z-10 mx-6 mb-10 h-[260px]">
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-black/50 bg-[#0E1635] border border-[#DFBA67]/40">
-            {homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
+            {/* Mobile: always prefer image over video for fast LCP.
+                Video adds ~500KB + processing delay that tanks LCP on 4G. */}
+            {homepage?.heroImage?.asset?.url ? (
+              <Image
+                src={homepage.heroImage.asset.url}
+                alt={heroImageAlt}
+                fill
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 640px) 92vw, 400px"
+                className="object-cover"
+              />
+            ) : homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
               <video
                 src={homepage.heroVideoUrl}
                 autoPlay
                 muted
                 loop
                 playsInline
-                poster={homepage?.heroImage?.asset?.url}
+                preload="metadata"
                 className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : homepage?.heroImage?.asset?.url ? (
-              <Image
-                src={homepage.heroImage.asset.url}
-                alt={heroImageAlt}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover"
               />
             ) : (
               <div
@@ -515,6 +518,8 @@ export default async function Home() {
                       alt={localize(clientLogo.name, locale) || 'Client'}
                       width={200}
                       height={80}
+                      sizes="200px"
+                      loading="lazy"
                       className="max-w-[170px] max-h-[60px] object-contain"
                     />
                   )}

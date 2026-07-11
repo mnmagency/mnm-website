@@ -34,7 +34,7 @@ type SiteSettings = {
 } | null
 
 export default async function TrackingScripts() {
-  const s: SiteSettings = await client.fetch(`
+  const raw: SiteSettings = await client.fetch(`
     *[_type == "siteSettings"][0]{
       gaMeasurementId,
       gtmContainerId,
@@ -47,7 +47,25 @@ export default async function TrackingScripts() {
     }
   `)
 
-  if (!s) return null
+  if (!raw) return null
+
+  // Defensive trim on every ID — a stray leading/trailing space in Sanity
+  // would otherwise produce broken URLs like "gtm.js?id=%20GTM-XXXX" (404).
+  // Empty strings become undefined so the conditionals below skip cleanly.
+  const trim = (v?: string) => {
+    const t = v?.trim()
+    return t ? t : undefined
+  }
+  const s = {
+    gaMeasurementId:       trim(raw.gaMeasurementId),
+    gtmContainerId:        trim(raw.gtmContainerId),
+    googleAdsConversionId: trim(raw.googleAdsConversionId),
+    metaPixelId:           trim(raw.metaPixelId),
+    tiktokPixelId:         trim(raw.tiktokPixelId),
+    snapchatPixelId:       trim(raw.snapchatPixelId),
+    linkedinPartnerId:     trim(raw.linkedinPartnerId),
+    xPixelId:              trim(raw.xPixelId),
+  }
 
   return (
     <>

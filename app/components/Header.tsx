@@ -1,6 +1,7 @@
 // Header Component (CMS Navigation + Mega Menu + Mobile CSS Menu + Locale Switcher)
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { client } from '@/lib/sanity'
 import SocialIcons from '@/app/components/SocialIcons'
 import LocaleSwitcher from '@/app/components/LocaleSwitcher'

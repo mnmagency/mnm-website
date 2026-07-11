@@ -247,6 +247,10 @@ export default async function PageLayout({
   const settings = await client.fetch<{gtmContainerId?: string} | null>(`
     *[_type == "siteSettings"][0]{ gtmContainerId }
   `)
+  // Defensive trim — if the editor accidentally pasted a leading/trailing
+  // space in the Sanity field, the GTM URL becomes ".../gtm.js?id=%20GTM-..."
+  // which 404s. Always clean the ID before injecting into a URL.
+  const gtmId = settings?.gtmContainerId?.trim()
 
   return (
     <>
@@ -266,10 +270,10 @@ export default async function PageLayout({
       <main className={`min-h-screen ${backgroundClass}`}>
         {/* GTM <noscript> fallback (per Google's install spec). Renders as an
             invisible iframe when JS is disabled. */}
-        {settings?.gtmContainerId && (
+        {gtmId && (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${settings.gtmContainerId}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
               height="0"
               width="0"
               style={{ display: 'none', visibility: 'hidden' }}
