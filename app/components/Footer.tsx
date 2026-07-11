@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { client } from '@/lib/sanity'
 import SocialIcons from '@/app/components/SocialIcons'
 import { localize, localizePath } from '@/lib/locale'
@@ -75,9 +76,13 @@ export default async function Footer() {
           {/* BRAND — prefer the dark-variant logo for white bg, fall back to primary */}
           <div className="lg:col-span-2">
             {(nav?.logoDark?.asset?.url || nav?.logo?.asset?.url) ? (
-              <img
-                src={nav?.logoDark?.asset?.url || nav?.logo?.asset?.url}
+              <Image
+                src={(nav?.logoDark?.asset?.url || nav?.logo?.asset?.url) as string}
                 alt={brand}
+                width={260}
+                height={80}
+                sizes="182px"
+                loading="lazy"
                 className="h-14 w-auto mb-6"
               />
             ) : (
@@ -112,9 +117,9 @@ export default async function Footer() {
             <div className="grid grid-cols-2 gap-10">
               {footerColumns.map((column: FooterColumn, index: number) => (
                 <div key={index}>
-                  <h4 className="text-[#0E1635] font-bold mb-5">
+                  <h3 className="text-[#0E1635] font-bold mb-5">
                     {localize(column.columnTitle, locale)}
-                  </h4>
+                  </h3>
 
                   <div className="flex flex-col gap-3 text-[#475569]">
                     {column?.links?.map((item: FooterLink, itemIndex: number) => (
@@ -134,9 +139,9 @@ export default async function Footer() {
 
           {/* CONTACT ALWAYS VISIBLE */}
           <div>
-            <h4 className="text-[#0E1635] font-bold mb-5">
+            <h3 className="text-[#0E1635] font-bold mb-5">
               {contactColumnTitle}
-            </h4>
+            </h3>
 
             <div className="flex flex-col gap-3 text-[#475569]">
               {address && <p>{address}</p>}
@@ -164,7 +169,7 @@ export default async function Footer() {
               socials={nav?.socials}
               showLabel
               labelClassName="text-sm text-[#475569]"
-              linkClassName="text-[#DFBA67] hover:text-[#0E1635] transition-colors"
+              linkClassName="inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-[#DFBA67] hover:text-[#0E1635] transition-colors"
             />
 
             <a

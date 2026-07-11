@@ -79,9 +79,13 @@ export default async function Header() {
       <div className="relative max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
         <Link href={localizePath('/', locale)} className="flex items-center">
           {nav?.logo?.asset?.url ? (
-            <img
+            <Image
               src={nav.logo.asset.url}
               alt={brand}
+              width={200}
+              height={71}
+              priority
+              sizes="(max-width: 768px) 135px, 158px"
               className="h-12 md:h-14 w-auto"
             />
           ) : (

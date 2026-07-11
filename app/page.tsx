@@ -286,7 +286,7 @@ export default async function Home() {
 
         {/* Text block below the video */}
         <div className="relative z-10 px-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-white/60 mb-4 font-medium">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-white/75 mb-4 font-medium">
             {heroEyebrow}
           </p>
           <h1 className="text-[2rem] font-bold leading-[1] tracking-[-0.025em] text-white mb-5 uppercase">
@@ -397,7 +397,7 @@ export default async function Home() {
         {/* Foreground content — kept narrower so the D-shape sits clean next to it */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
           <div className="max-w-[560px]">
-            <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/60 mb-4 md:mb-5 font-medium">
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/75 mb-4 md:mb-5 font-medium">
               {heroEyebrow}
             </p>
 
@@ -435,10 +435,10 @@ export default async function Home() {
         </div>
 
         {/* Loop indicator — sits on the trailing edge in the reading direction */}
-        <div className={`absolute bottom-6 ${isRtl ? 'left-6' : 'right-6'} hidden md:flex items-center gap-2 text-white/35 text-[10px] uppercase tracking-[0.3em] font-medium z-10`}>
+        <div className={`absolute bottom-6 ${isRtl ? 'left-6' : 'right-6'} hidden md:flex items-center gap-2 text-white/55 text-[10px] uppercase tracking-[0.3em] font-medium z-10`}>
           <span className="flex gap-0.5">
-            <span className="w-[2px] h-3 bg-white/35" />
-            <span className="w-[2px] h-3 bg-white/35" />
+            <span className="w-[2px] h-3 bg-white/55" />
+            <span className="w-[2px] h-3 bg-white/55" />
           </span>
           <span>Loop</span>
         </div>
@@ -1015,7 +1015,7 @@ export default async function Home() {
                     >
                       {/* Top: dark card with category + title */}
                       <div className="p-6 lg:p-7 flex-grow flex flex-col min-h-[260px]">
-                        <p className="text-xs uppercase tracking-[0.25em] text-white/55 font-medium mb-5">
+                        <p className="text-xs uppercase tracking-[0.25em] text-white/75 font-medium mb-5">
                           {pCategory || (locale === 'ar' ? 'مدونة' : 'Blog')}
                         </p>
                         <h3 className="text-xl lg:text-2xl font-bold text-white leading-[1.15] tracking-tight">
@@ -1093,7 +1093,7 @@ export default async function Home() {
                   <span className="text-[#0E1635] group-hover:translate-x-1 transition-transform text-xl">›</span>
                 </a>
 
-                <p className="text-xs text-white/60 mt-6 uppercase tracking-[0.25em]">
+                <p className="text-xs text-white/75 mt-6 uppercase tracking-[0.25em]">
                   {locale === 'ar' ? 'مجاني · 30 دقيقة · بدون التزام' : 'Free · 30 minutes · No commitment'}
                 </p>
               </div>

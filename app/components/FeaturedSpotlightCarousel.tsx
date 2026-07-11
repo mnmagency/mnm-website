@@ -207,7 +207,7 @@ export default function FeaturedSpotlightCarousel({
               </button>
 
               {/* Dots — clickable, indicate which slide is active */}
-              <div className="flex items-center gap-2 ml-2">
+              <div className="flex items-center gap-1 ml-2">
                 {slides.map((_, i) => {
                   const isActive = i === index
                   return (
@@ -216,12 +216,18 @@ export default function FeaturedSpotlightCarousel({
                       type="button"
                       onClick={() => goTo(i)}
                       aria-label={`${labels.slideLabel} ${i + 1}`}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        isActive
-                          ? 'w-8 bg-[#DFBA67]'
-                          : 'w-2 bg-white/30 hover:bg-white/60'
-                      }`}
-                    />
+                      // Outer button is 44×44px (Apple/WCAG minimum tap target)
+                      // Inner span holds the small visual dot the design calls for.
+                      className="min-w-[44px] min-h-[44px] flex items-center justify-center group"
+                    >
+                      <span
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          isActive
+                            ? 'w-8 bg-[#DFBA67]'
+                            : 'w-2 bg-white/40 group-hover:bg-white/70'
+                        }`}
+                      />
+                    </button>
                   )
                 })}
               </div>

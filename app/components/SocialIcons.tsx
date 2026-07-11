@@ -24,8 +24,12 @@ export default function SocialIcons({
   showLabel = false,
   className = '',
   iconClassName = 'w-5 h-5',
-  labelClassName = 'text-sm text-white/70',
-  linkClassName = 'text-white/70 hover:text-[#DFBA67] transition-colors',
+  labelClassName = 'text-sm text-white/80',
+  // Anchor gets `inline-flex items-center justify-center` + minimum
+  // 44×44 tap area (WCAG / Apple HIG) via `min-w-[44px] min-h-[44px]`.
+  // Icons stay visually the same size (`iconClassName` above); the
+  // padding is invisible but tappable.
+  linkClassName = 'inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-white/80 hover:text-[#DFBA67] transition-colors',
 }: Props) {
   if (!socials) return null
 
