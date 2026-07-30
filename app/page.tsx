@@ -342,14 +342,19 @@ export default async function Home() {
 
           {/* The semi-circle holding the video */}
           <div className={`absolute inset-0 ${isRtl ? 'rounded-r-full' : 'rounded-l-full'} overflow-hidden shadow-2xl shadow-black/60 bg-[#0E1635]`}>
-            {homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
+            {(homepage?.heroMediaType === 'video' || !homepage?.heroImage?.asset?.url) ? (
               <video
-                src={homepage.heroVideoUrl}
+                // Prefer Sanity URL if set, otherwise the compressed local hero
+                // video (~2.4 MB, 720p, muted). Poster shows instantly while
+                // video streams in the background so hero never looks empty.
+                src={homepage?.heroVideoUrl || '/hero-video.mp4'}
+                poster="/hero-poster.jpg"
                 autoPlay
                 muted
                 loop
                 playsInline
-                className="w-full h-full object-contain"
+                preload="metadata"
+                className="w-full h-full object-cover"
               />
             ) : homepage?.heroImage?.asset?.url ? (
               <Image
