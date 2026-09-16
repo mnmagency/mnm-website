@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useState } from 'react'
 
+import HumanCheck, { humanCheckPasses } from '../components/HumanCheck'
+
 type Placeholders = {
   url?: string
   firstName?: string
@@ -75,6 +77,12 @@ export default function SeoAuditWidget({
       e.preventDefault()
       setStatus('error')
       setErrorMsg('Please enter a valid phone number.')
+      return
+    }
+    if (!humanCheckPasses(new FormData(form))) {
+      e.preventDefault()
+      setStatus('error')
+      setErrorMsg('Wrong answer to the spam-check question. Please try again.')
       return
     }
 
@@ -165,6 +173,8 @@ export default function SeoAuditWidget({
           placeholder={placeholders?.phone || 'Phone Number'}
           className="border border-[#dbdfe9] rounded px-4 py-2.5 text-base text-[#4b5675] outline-none focus:border-[#DFBA67]"
         />
+
+        <HumanCheck className="border border-[#dbdfe9] rounded px-4 py-2.5 text-base text-[#4b5675] outline-none focus:border-[#DFBA67]" />
 
         {status === 'error' && errorMsg && (
           <p role="alert" className="rounded bg-red-50 border border-red-200 text-red-700 px-4 py-2 text-sm">

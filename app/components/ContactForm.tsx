@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import HumanCheck, { humanCheckPasses } from './HumanCheck'
+
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 type Placeholders = {
@@ -45,7 +47,17 @@ export default function ContactForm({
     const form = e.currentTarget
     const formData = new FormData(form)
 
+    if (!humanCheckPasses(formData)) {
+      setStatus('error')
+      setErrorMsg('Wrong answer to the spam-check question. Please try again.')
+      return
+    }
+
     const data = {
+      website: formData.get('website'),
+      humanA: formData.get('humanA'),
+      humanB: formData.get('humanB'),
+      humanCheck: formData.get('humanCheck'),
       name: formData.get('name'),
       email: formData.get('email'),
       phone: formData.get('phone'),
@@ -156,6 +168,8 @@ export default function ContactForm({
         rows={5}
         className="border border-black/10 rounded-xl px-5 py-4 outline-none focus:border-[#DFBA67]"
       />
+
+      <HumanCheck className="border border-black/10 rounded-xl px-5 py-4 outline-none focus:border-[#DFBA67]" />
 
       {status === 'error' && errorMsg && (
         <p

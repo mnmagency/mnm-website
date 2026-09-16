@@ -69,3 +69,24 @@ export function isValidEmail(value: string): boolean {
 export type ValidationResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string }
+
+/**
+ * "Calculator" human check. Forms send humanA + humanB (the two numbers the
+ * visitor saw) and humanCheck (the visitor's answer). Bots that POST directly
+ * to the API without solving the sum are rejected.
+ */
+export function passesHumanCheck(body: Record<string, unknown>): boolean {
+  const a = Number(body.humanA)
+  const b = Number(body.humanB)
+  const answer = Number(body.humanCheck)
+  if (!Number.isInteger(a) || !Number.isInteger(b) || !Number.isInteger(answer)) {
+    return false
+  }
+  if (a < 1 || a > 20 || b < 1 || b > 20) return false
+  return a + b === answer
+}
+
+/** Hidden "website" honeypot field: humans never see it, bots auto-fill it. */
+export function isHoneypotTripped(body: Record<string, unknown>): boolean {
+  return typeof body.website === 'string' && body.website.trim() !== ''
+}

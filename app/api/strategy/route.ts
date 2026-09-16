@@ -4,7 +4,9 @@ import { client } from '@/lib/sanity'
 import {
   escapeHtml,
   getClientIp,
+  isHoneypotTripped,
   isValidEmail,
+  passesHumanCheck,
   rateLimit,
   sanitizeString,
 } from '@/lib/security'
@@ -71,6 +73,18 @@ export async function POST(req: Request) {
   // 4. Validate + sanitize. Note: the StrategyForm does NOT send `service` so
   // we don't list it here. Add it back when the form gets a services dropdown.
   const body = raw as Record<string, unknown>
+
+  // 4b. Anti-spam: honeypot + calculator check (see lib/security.ts)
+  if (isHoneypotTripped(body)) {
+    // Pretend success so bots don't learn they were caught.
+    return NextResponse.json({ success: true })
+  }
+  if (!passesHumanCheck(body)) {
+    return NextResponse.json(
+      { success: false, error: 'Spam check failed. Please answer the question correctly.' },
+      { status: 400 }
+    )
+  }
   const name = sanitizeString(body.name, 120)
   const email = sanitizeString(body.email, 254)
   const country = sanitizeString(body.country, 120)

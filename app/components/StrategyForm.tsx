@@ -1,6 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+
+import HumanCheck, { humanCheckPasses } from './HumanCheck'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -46,10 +48,6 @@ type Props = {
    * gold focus rings — use when the form sits on a white/cream card.
    */
   variant?: Variant
-}
-
-function escapeForRegex(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 // Variant-specific class strings. Keeping them centralized avoids the
@@ -101,8 +99,6 @@ function classes(variant: Variant) {
 
 export default function StrategyForm({
   countries = [],
-  humanQuestion = '',
-  humanAnswer = '',
   placeholders,
   services = [],
   budgetOptions = [],
@@ -116,11 +112,6 @@ export default function StrategyForm({
   const [errorMsg, setErrorMsg] = useState<string>('')
   const c = classes(variant)
 
-  const humanPattern = useMemo(
-    () => (humanAnswer ? escapeForRegex(humanAnswer) : undefined),
-    [humanAnswer]
-  )
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (status === 'submitting') return
@@ -131,7 +122,17 @@ export default function StrategyForm({
     const form = e.currentTarget
     const formData = new FormData(form)
 
+    if (!humanCheckPasses(formData)) {
+      setStatus('error')
+      setErrorMsg('Wrong answer to the spam-check question. Please try again.')
+      return
+    }
+
     const data = {
+      website: formData.get('website'),
+      humanA: formData.get('humanA'),
+      humanB: formData.get('humanB'),
+      humanCheck: formData.get('humanCheck'),
       name: formData.get('name'),
       email: formData.get('email'),
       country: formData.get('country'),
@@ -298,17 +299,7 @@ export default function StrategyForm({
         className={c.field + ' min-h-[140px] resize-y'}
       />
 
-      {humanQuestion && (
-        <input
-          name="humanCheck"
-          type="text"
-          required
-          pattern={humanPattern}
-          placeholder={humanQuestion}
-          title="Incorrect answer"
-          className={c.field}
-        />
-      )}
+      <HumanCheck className={c.field} />
 
       {status === 'error' && errorMsg && (
         <p
