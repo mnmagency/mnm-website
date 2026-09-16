@@ -249,8 +249,8 @@ export default async function Home() {
         {/* Video / Image on top — full width rounded card, fixed height */}
         <div className="relative z-10 mx-6 mb-10 h-[260px]">
           <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-black/50 bg-[#0E1635] border border-[#DFBA67]/40">
-            {/* Mobile: always prefer image over video for fast LCP.
-                Video adds ~500KB + processing delay that tanks LCP on 4G. */}
+            {/* Mobile: CMS image (if set) wins for fastest LCP; otherwise show the
+                hero video — its lightweight poster keeps first paint fast on 4G. */}
             {homepage?.heroImage?.asset?.url ? (
               <Image
                 src={homepage.heroImage.asset.url}
@@ -261,24 +261,16 @@ export default async function Home() {
                 sizes="(max-width: 640px) 92vw, 400px"
                 className="object-cover"
               />
-            ) : homepage?.heroMediaType === 'video' && homepage?.heroVideoUrl ? (
+            ) : (
               <video
-                src={homepage.heroVideoUrl}
+                src={homepage?.heroVideoUrl || '/hero-video.mp4'}
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="metadata"
+                poster="/hero-poster.jpg"
                 className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <div
-                className="absolute inset-0 animate-[spin_60s_linear_infinite]"
-                style={{
-                  background:
-                    'conic-gradient(from 0deg, #DFBA67, #DFBA67, #DFBA67, #DFBA67)',
-                  opacity: 0.9,
-                }}
               />
             )}
           </div>
