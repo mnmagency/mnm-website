@@ -70,19 +70,63 @@ export type ValidationResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: string }
 
+import { createHash, createHmac, timingSafeEqual } from 'crypto'
+
 /**
- * "Calculator" human check. Forms send humanA + humanB (the two numbers the
- * visitor saw) and humanCheck (the visitor's answer). Bots that POST directly
- * to the API without solving the sum are rejected.
+ * "Calculator" human check, server-issued and signed.
+ *
+ * /api/human-challenge hands the browser two numbers plus an HMAC signature
+ * over (a, b, issued-at). The form must send them back untouched together
+ * with the visitor's answer. That closes both bot paths:
+ *  - a bot can't invent its own easy numbers (signature won't match), and
+ *  - a bot that fetches a real challenge and answers instantly is caught by
+ *    the minimum-age gate (no human submits a form 4s after it loads).
+ *
+ * Secret: HUMAN_CHECK_SECRET env var if set; otherwise derived by hashing the
+ * Resend key so it is stable across restarts without extra configuration
+ * (the key itself is never exposed — only a one-way hash of it is used).
  */
-export function passesHumanCheck(body: Record<string, unknown>): boolean {
+const CHALLENGE_SECRET =
+  process.env.HUMAN_CHECK_SECRET ||
+  createHash('sha256')
+    .update('mnm-human-challenge:' + (process.env.RESEND_API_KEY || 'static-fallback'))
+    .digest('hex')
+
+const CHALLENGE_MIN_AGE_MS = 4_000 // faster than any human fills a form
+const CHALLENGE_MAX_AGE_MS = 30 * 60_000 // stale after 30 minutes
+
+function signChallenge(a: number, b: number, iat: number): string {
+  return createHmac('sha256', CHALLENGE_SECRET)
+    .update(`${a}.${b}.${iat}`)
+    .digest('hex')
+}
+
+export function issueHumanChallenge(): { a: number; b: number; iat: number; sig: string } {
+  const a = 2 + Math.floor(Math.random() * 8)
+  const b = 2 + Math.floor(Math.random() * 8)
+  const iat = Date.now()
+  return { a, b, iat, sig: signChallenge(a, b, iat) }
+}
+
+export function verifyHumanChallenge(body: Record<string, unknown>): boolean {
   const a = Number(body.humanA)
   const b = Number(body.humanB)
+  const iat = Number(body.humanIat)
   const answer = Number(body.humanCheck)
-  if (!Number.isInteger(a) || !Number.isInteger(b) || !Number.isInteger(answer)) {
-    return false
-  }
+  const sig = typeof body.humanSig === 'string' ? body.humanSig : ''
+
+  if (!Number.isInteger(a) || !Number.isInteger(b) || !Number.isInteger(answer)) return false
+  if (!Number.isFinite(iat) || !sig) return false
   if (a < 1 || a > 20 || b < 1 || b > 20) return false
+
+  const expected = signChallenge(a, b, iat)
+  const sigBuf = Buffer.from(sig)
+  const expBuf = Buffer.from(expected)
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) return false
+
+  const age = Date.now() - iat
+  if (age < CHALLENGE_MIN_AGE_MS || age > CHALLENGE_MAX_AGE_MS) return false
+
   return a + b === answer
 }
 

@@ -58,6 +58,8 @@ export default function ContactForm({
       humanA: formData.get('humanA'),
       humanB: formData.get('humanB'),
       humanCheck: formData.get('humanCheck'),
+      humanIat: formData.get('humanIat'),
+      humanSig: formData.get('humanSig'),
       name: formData.get('name'),
       email: formData.get('email'),
       phone: formData.get('phone'),

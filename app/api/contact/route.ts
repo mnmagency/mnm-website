@@ -6,7 +6,7 @@ import {
   getClientIp,
   isHoneypotTripped,
   isValidEmail,
-  passesHumanCheck,
+  verifyHumanChallenge,
   rateLimit,
   sanitizeString,
 } from '@/lib/security'
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     // Pretend success so bots don't learn they were caught.
     return NextResponse.json({ success: true })
   }
-  if (!passesHumanCheck(body)) {
+  if (!verifyHumanChallenge(body)) {
     return NextResponse.json(
       { success: false, error: 'Spam check failed. Please answer the question correctly.' },
       { status: 400 }

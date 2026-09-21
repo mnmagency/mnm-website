@@ -10,7 +10,9 @@ import { useEffect, useState } from 'react'
  * server-side (bots that POST straight to the API fail it), and a hidden
  * "website" honeypot field catches bots that auto-fill every input.
  *
- * Numbers are generated after mount so server and client HTML always match.
+ * The challenge is issued and HMAC-signed by /api/human-challenge so bots
+ * cannot substitute their own numbers; it is fetched after mount so server
+ * and client HTML always match.
  */
 export default function HumanCheck({
   className = '',
@@ -19,12 +21,19 @@ export default function HumanCheck({
   className?: string
   label?: string
 }) {
-  const [a, setA] = useState<number | null>(null)
-  const [b, setB] = useState<number | null>(null)
+  const [ch, setCh] = useState<{ a: number; b: number; iat: number; sig: string } | null>(null)
 
   useEffect(() => {
-    setA(2 + Math.floor(Math.random() * 8))
-    setB(2 + Math.floor(Math.random() * 8))
+    let cancelled = false
+    fetch('/api/human-challenge')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!cancelled && data && typeof data.a === 'number') setCh(data)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   return (
@@ -38,15 +47,17 @@ export default function HumanCheck({
         aria-hidden="true"
         className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden"
       />
-      <input type="hidden" name="humanA" value={a ?? ''} readOnly />
-      <input type="hidden" name="humanB" value={b ?? ''} readOnly />
+      <input type="hidden" name="humanA" value={ch?.a ?? ''} readOnly />
+      <input type="hidden" name="humanB" value={ch?.b ?? ''} readOnly />
+      <input type="hidden" name="humanIat" value={ch?.iat ?? ''} readOnly />
+      <input type="hidden" name="humanSig" value={ch?.sig ?? ''} readOnly />
       <input
         name="humanCheck"
         type="text"
         inputMode="numeric"
         required
         aria-label={label}
-        placeholder={a !== null && b !== null ? `${a} + ${b} = ?` : '… + … = ?'}
+        placeholder={ch ? `${ch.a} + ${ch.b} = ?` : '… + … = ?'}
         className={className}
       />
     </>
