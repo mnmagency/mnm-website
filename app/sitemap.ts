@@ -2,6 +2,9 @@ import { MetadataRoute } from 'next'
 import { client } from '@/lib/sanity'
 
 const SITE_URL = 'https://mnmagency.com'
+
+// Regenerate hourly so new Sanity pages and posts appear without a redeploy.
+export const revalidate = 3600
 const LOCALES = ['en', 'ar'] as const
 
 type Slug = { slug?: { current?: string }; _updatedAt?: string }
