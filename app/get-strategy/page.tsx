@@ -1,4 +1,5 @@
 import { client } from '@/lib/sanity'
+import { pageAlternates } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import StrategyForm from '@/app/components/StrategyForm'
 import { localize } from '@/lib/locale'
@@ -61,7 +62,7 @@ export async function generateMetadata() {
       description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale),
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
     },
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates('/get-strategy'),
   }
 }
 

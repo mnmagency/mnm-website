@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { pageAlternates } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import { localize, localizePath } from '@/lib/locale'
@@ -51,7 +52,7 @@ export async function generateMetadata() {
     description:
       localize(seo?.metaDescription, locale) ||
       'M&M Marketing builds growth systems combining strategy, execution, and measurable results for businesses in Qatar.',
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates('/about'),
   }
 }
 

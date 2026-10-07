@@ -5,7 +5,6 @@ import FloatingWhatsAppCta, { type WhatsAppRoute } from '@/app/components/Floati
 import TrackingScripts from '@/app/components/TrackingScripts'
 import { localize } from '@/lib/locale'
 import { getLocale } from '@/lib/locale-server'
-import Script from 'next/script'
 import { client } from '@/lib/sanity'
 
 const SITE_URL = 'https://mnmagency.com'
@@ -22,12 +21,12 @@ type NavBrand = {
   logo?: { asset?: { url?: string } }
   phone?: string
   email?: string
-  address?: string
+  address?: { en?: string; ar?: string } | string
   socials?: Socials
 }
 
 // Build a full LocalBusiness / MarketingAgency schema keyed for Qatar
-// local search. Adds priceRange, geo coordinates (Doha), opening hours,
+// local search. Adds geo coordinates (Tornado Tower), opening hours,
 // areaServed, and a Service catalog — all signals Google uses to
 // surface the business in the "Marketing agency in Qatar" local pack.
 function buildOrganizationSchema(nav: NavBrand | null | undefined) {
@@ -50,7 +49,6 @@ function buildOrganizationSchema(nav: NavBrand | null | undefined) {
     url: SITE_URL,
     description:
       'M&M Marketing is a full-service marketing agency in Qatar specialising in SEO, Web Development, Social Media Management, Branding, Paid Ads, Videography, and Bulk SMS for brands in Doha and across Qatar.',
-    priceRange: '$$$',
     currenciesAccepted: 'QAR, USD',
     paymentAccepted: 'Bank Transfer, Credit Card',
     areaServed: [
@@ -80,11 +78,12 @@ function buildOrganizationSchema(nav: NavBrand | null | undefined) {
         closes: '18:00',
       },
     ],
-    // Doha centre coordinates — refine to your office location if desired.
+    // Tornado Tower, West Bay (building-level coordinates, en.wikipedia.org/wiki/Tornado_Tower).
+    // Update here if the office moves.
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 25.276987,
-      longitude: 51.520008,
+      latitude: 25.31917,
+      longitude: 51.52778,
     },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
@@ -169,10 +168,13 @@ function buildOrganizationSchema(nav: NavBrand | null | undefined) {
 
   if (nav?.email) schema.email = nav.email
 
-  if (nav?.address) {
+  // Sanity stores the address as { en, ar }. Schema uses the English street
+  // line so it matches the Google Business Profile listing.
+  const street = localize(nav?.address, 'en')
+  if (street) {
     schema.address = {
       '@type': 'PostalAddress',
-      streetAddress: nav.address,
+      streetAddress: street,
       addressLocality: 'Doha',
       addressCountry: 'QA',
     }
@@ -258,12 +260,13 @@ export default async function PageLayout({
           when the corresponding ID is present in Sanity Studio → Site Settings. */}
       <TrackingScripts />
 
-      <Script
-        id="organization-schema"
+      {/* Plain server-rendered tag (per Next docs) so the schema is in the
+          initial HTML. next/script afterInteractive only put it in the RSC
+          payload, which crawlers that don't run JS cannot read. */}
+      <script
         type="application/ld+json"
-        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationSchema),
+          __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c'),
         }}
       />
 

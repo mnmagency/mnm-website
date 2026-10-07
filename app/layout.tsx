@@ -66,13 +66,6 @@ export async function generateMetadata(): Promise<Metadata> {
         'facebook-domain-verification': s?.facebookDomainVerification || '',
       },
     },
-    alternates: {
-      canonical: 'https://mnmagency.com',
-      languages: {
-        en: 'https://mnmagency.com',
-        ar: 'https://mnmagency.com/ar',
-      },
-    },
     openGraph: {
       type: 'website',
       siteName: 'M&M Marketing',

@@ -1,4 +1,5 @@
 import { client } from '@/lib/sanity'
+import { pageAlternates } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import { localize } from '@/lib/locale'
 import { getLocale } from '@/lib/locale-server'
@@ -45,7 +46,7 @@ export async function generateMetadata() {
     title: localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'FAQs | M&M Marketing Qatar',
     description: localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
       'Frequently asked questions about M&M Marketing services in Qatar.',
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates('/faqs'),
   }
 }
 

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { pageAlternates } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import ServiceIcon from '@/app/components/ServiceIcon'
@@ -36,7 +37,7 @@ export async function generateMetadata() {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
     },
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates('/services'),
   }
 }
 

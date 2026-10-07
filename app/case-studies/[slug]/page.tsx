@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { pageAlternates } from '@/lib/seo'
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : caseStudy?.image?.asset?.url ? [caseStudy.image.asset.url] : [],
     },
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates(`/case-studies/${slug}`),
   }
 }
 

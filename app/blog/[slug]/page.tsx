@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { pageAlternates } from '@/lib/seo'
 import Link from 'next/link'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import { client } from '@/lib/sanity'
@@ -152,7 +153,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : post?.image?.asset?.url ? [post.image.asset.url] : [],
     },
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates(`/blog/${slug}`),
   }
 }
 

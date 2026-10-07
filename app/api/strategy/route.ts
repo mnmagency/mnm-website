@@ -11,7 +11,10 @@ import {
   sanitizeString,
 } from '@/lib/security'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Created per request, not at import time. Resend throws on a missing key, and
+// the build imports this module to collect page data, so a top-level client
+// breaks any build (e.g. Vercel Preview) that has no RESEND_API_KEY.
+const getResend = () => new Resend(process.env.RESEND_API_KEY)
 
 const FALLBACK_RECIPIENT =
   process.env.STRATEGY_RECIPIENT_EMAIL || 'info@mnmagency.com'
@@ -121,7 +124,7 @@ export async function POST(req: Request) {
   // 5. Send
   const recipient = await resolveRecipient()
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: FROM_ADDRESS,
       to: [recipient],
       replyTo: email,

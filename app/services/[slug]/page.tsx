@@ -19,6 +19,7 @@
  */
 
 import Image from 'next/image'
+import { pageAlternates } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -152,7 +153,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'website',
     },
     twitter: { card: 'summary_large_image', title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] },
-    alternates: { canonical: seo?.canonicalUrl || undefined },
+    alternates: await pageAlternates(`/services/${slug}`),
   }
 }
 

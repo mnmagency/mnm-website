@@ -10,6 +10,7 @@
  */
 
 import Link from 'next/link'
+import { pageAlternates } from '@/lib/seo'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
@@ -186,13 +187,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: ogImage ? [ogImage] : [],
       type: 'website',
     },
-    alternates: {
-      canonical: lp.seo?.canonicalUrl || `https://mnmagency.com/lp/${slug}`,
-      languages: {
-        en: `https://mnmagency.com/lp/${slug}`,
-        ar: `https://mnmagency.com/ar/lp/${slug}`,
-      },
-    },
+    alternates: await pageAlternates(`/lp/${slug}`),
   }
 }
 

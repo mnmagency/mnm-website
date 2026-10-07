@@ -76,7 +76,7 @@ async function fetchAll() {
   return client.fetch(`
     {
       "navigation": *[_type == "navigation"][0]{
-        brandName, footerDescription
+        brandName, footerDescription, address, phone, email
       },
       "homepage": *[_type == "homepage"][0]{
         title, subtitle, missionText
@@ -207,6 +207,20 @@ function buildLlmsTxt(data) {
       lines.push(`- [${title}](${SITE_URL}/lp/${slug})${subtitle ? `: ${subtitle}` : ''}`)
       lines.push(`- [${title} (العربية)](${SITE_URL}/ar/lp/${slug})`)
     }
+    lines.push('')
+  }
+
+  const nav = data.navigation || {}
+  if (nav.address || nav.phone || nav.email) {
+    lines.push('## Contact')
+    lines.push('')
+    const address = clean(localize(nav.address, 'en'))
+    if (address) lines.push(`- Address: ${address}, Doha, Qatar`)
+    if (nav.phone) lines.push(`- Phone: ${clean(nav.phone)}`)
+    if (nav.email) lines.push(`- Email: ${clean(nav.email)}`)
+    lines.push('- Working hours: Sunday to Thursday, 09:00 to 18:00 (Qatar time)')
+    lines.push('- Languages: English, Arabic')
+    lines.push(`- Website: ${SITE_URL}`)
     lines.push('')
   }
 
