@@ -30,3 +30,41 @@ export async function pageAlternates(path: string) {
     languages: { en, ar, 'x-default': en },
   }
 }
+
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`
+
+/**
+ * Open Graph block for a page. Next shallow-merges metadata, so a page that
+ * sets `openGraph` replaces the root one; this restores siteName, locale and
+ * the page URL, and falls back to the default share image when the page has
+ * none of its own.
+ */
+export async function pageOpenGraph(
+  path: string,
+  og: { title?: string; description?: string; images?: string[] } = {},
+) {
+  const locale = await getLocale()
+  return {
+    type: 'website' as const,
+    siteName: 'M&M Marketing',
+    locale: locale === 'ar' ? 'ar_QA' : 'en_US',
+    alternateLocale: locale === 'ar' ? 'en_US' : 'ar_QA',
+    ...og,
+    url: localeUrl(path, locale),
+    images: og.images && og.images.length ? og.images : [DEFAULT_OG_IMAGE],
+  }
+}
+
+/** BreadcrumbList JSON-LD. `items` are English paths; names are already localized. */
+export function breadcrumbLd(locale: 'en' | 'ar', items: { name: string; path: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      item: localeUrl(it.path, locale),
+    })),
+  }
+}

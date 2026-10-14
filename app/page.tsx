@@ -19,7 +19,7 @@
  */
 
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -142,11 +142,11 @@ export async function generateMetadata() {
   return {
     title,
     description,
-    openGraph: {
+    openGraph: await pageOpenGraph('/', {
       title,
       description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates('/'),
   }
 }
@@ -282,9 +282,10 @@ export default async function Home() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-white/75 mb-4 font-medium">
             {heroEyebrow}
           </p>
-          <h1 className="text-[2rem] font-bold leading-[1] tracking-[-0.025em] text-white mb-5 uppercase">
+          {/* Mobile and desktop heroes are swapped with CSS; only the desktop one is an <h1> so the page has a single H1 */}
+          <div role="heading" aria-level={1} className="text-[2rem] font-bold leading-[1] tracking-[-0.025em] text-white mb-5 uppercase">
             {heroTitle}
-          </h1>
+          </div>
           <p className="text-sm text-white/70 leading-relaxed mb-6 font-light">
             {heroSubtitle}
           </p>

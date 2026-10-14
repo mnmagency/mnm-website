@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import ContactForm from '@/app/components/ContactForm'
 import { localize, localizePath } from '@/lib/locale'
@@ -71,11 +71,11 @@ export async function generateMetadata() {
     title: localize(seo?.metaTitle, locale) || 'Contact M&M Marketing Qatar',
     description: localize(seo?.metaDescription, locale) ||
       "Contact M&M Marketing — Qatar's trusted marketing agency in Doha. SEO, web development, social media, branding, paid ads, and videography. Free consultation.",
-    openGraph: {
+    openGraph: await pageOpenGraph('/contact', {
       title: localize(seo?.metaTitle, locale),
       description: localize(seo?.metaDescription, locale),
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates('/contact'),
   }
 }

@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import StrategyForm from '@/app/components/StrategyForm'
 import { localize } from '@/lib/locale'
@@ -57,11 +57,11 @@ export async function generateMetadata() {
     title: localize(seo?.metaTitle, locale) || localize(form?.title, locale) || 'Free Marketing Consultation in Qatar | M&M Marketing',
     description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale) ||
       "Book a free marketing consultation with Qatar's leading marketing agency. Tell us about your business and get a tailored marketing plan within 24 hours.",
-    openGraph: {
+    openGraph: await pageOpenGraph('/get-strategy', {
       title: localize(seo?.metaTitle, locale) || localize(form?.title, locale),
       description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale),
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates('/get-strategy'),
   }
 }

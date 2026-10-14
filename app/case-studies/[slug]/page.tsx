@@ -1,5 +1,6 @@
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd } from '@/lib/seo'
+import JsonLd from '@/app/components/JsonLd'
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   )
 
   const seo = caseStudy?.seo
-  const title = localize(seo?.metaTitle, locale) || `${localize(caseStudy?.title, locale) || 'Case Study'} | M&M Marketing Qatar`
+  const title = localize(seo?.metaTitle, locale) || `${localize(caseStudy?.title, locale) || 'Case Study'}`
   const description = localize(seo?.metaDescription, locale) ||
     localize(caseStudy?.description, locale) ||
     localize(caseStudy?.results, locale) ||
@@ -44,10 +45,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   return {
     title, description,
-    openGraph: {
+    openGraph: await pageOpenGraph(`/case-studies/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : caseStudy?.image?.asset?.url ? [caseStudy.image.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates(`/case-studies/${slug}`),
   }
 }
@@ -99,8 +100,15 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
   const ctaButtonText  = locale === 'ar' ? 'احصل على استشارة مجانية' : 'Get Free Consultation'
   const backLabel      = locale === 'ar' ? '→ العودة إلى دراسات الحالة' : '← Back to Case Studies'
 
+  const crumbs = breadcrumbLd(locale, [
+    { name: locale === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
+    { name: locale === 'ar' ? 'دراسات الحالة' : 'Case Studies', path: '/case-studies' },
+    { name: L(caseStudy.title) || slug, path: `/case-studies/${slug}` },
+  ])
+
   return (
     <PageLayout>
+      <JsonLd data={crumbs} />
       {/* HERO */}
       <section className="relative px-6 pt-40 pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(223,186,103,0.16),transparent_35%)]" />

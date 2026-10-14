@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import ServiceIcon from '@/app/components/ServiceIcon'
@@ -27,16 +27,16 @@ export async function generateMetadata() {
   `)
 
   const seo = page?.seo
-  const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'Services | M&M Marketing Qatar'
+  const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'Services'
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
     'Complete marketing services in Qatar — SEO, web development, web design, social media management, branding, paid ads, videography, and bulk SMS. Full-service marketing agency in Doha.'
 
   return {
     title, description,
-    openGraph: {
+    openGraph: await pageOpenGraph('/services', {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates('/services'),
   }
 }

@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import { localize } from '@/lib/locale'
 import { getLocale } from '@/lib/locale-server'
@@ -42,10 +42,13 @@ export async function generateMetadata() {
     }
   `)
   const seo = page?.seo
+  const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'FAQs'
+  const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
+    'Frequently asked questions about M&M Marketing services in Qatar.'
   return {
-    title: localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'FAQs | M&M Marketing Qatar',
-    description: localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
-      'Frequently asked questions about M&M Marketing services in Qatar.',
+    title,
+    description,
+    openGraph: await pageOpenGraph('/faqs', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/faqs'),
   }
 }

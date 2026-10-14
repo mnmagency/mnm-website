@@ -39,7 +39,6 @@ const legacyRedirects = [
   { source: '/work/:slug*',    destination: '/case-studies/:slug*',  permanent: true },
 
   // Arabic (no Arabic locale yet — point to English equivalents)
-  { source: '/ar/services',                                                   destination: '/services', permanent: true },
   { source: '/ar/marketing-services',                                         destination: '/services', permanent: true },
   { source: '/ar/marketing-services/content-generation-and-optimization',     destination: '/services', permanent: true },
   { source: '/ar/marketing-services/email-marketing-in-qatar',                destination: '/services', permanent: true },
@@ -67,6 +66,20 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.sanity.io',
       },
     ],
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ]
   },
 
   async redirects() {

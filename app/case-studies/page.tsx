@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import { localize, localizePath } from '@/lib/locale'
@@ -30,13 +30,13 @@ export async function generateMetadata() {
   `)
 
   const seo = page?.seo
-  const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'Case Studies | M&M Marketing Qatar'
+  const title = localize(seo?.metaTitle, locale) || localize(page?.title, locale) || 'Case Studies'
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
     'Explore M&M Marketing case studies across websites, SEO, social media, branding, paid media, and growth systems in Qatar.'
 
   return {
     title, description,
-    openGraph: { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] },
+    openGraph: await pageOpenGraph('/case-studies', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/case-studies'),
   }
 }

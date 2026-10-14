@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL('https://mnmagency.com'),
     title: {
       default: 'Marketing Agency in Qatar | SEO, Web Development & Social Media | M&M',
-      template: '%s | M&M Marketing Qatar',
+      template: '%s | M&M',
     },
     description:
       'M&M Marketing is a leading marketing agency in Qatar. SEO, web development, social media management, branding, and paid ads for brands in Doha and across Qatar. Free consultation.',

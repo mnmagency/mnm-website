@@ -1,5 +1,6 @@
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, SITE_URL } from '@/lib/seo'
+import JsonLd from '@/app/components/JsonLd'
 import Link from 'next/link'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import { client } from '@/lib/sanity'
@@ -29,6 +30,7 @@ type BlogPost = {
   excerpt?: LocaleField
   content?: PortableTextBlock[] | string
   publishedAt?: string
+  _updatedAt?: string
   image?: ImageRef
   seo?: {
     metaTitle?: LocaleField
@@ -142,17 +144,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const seo = post?.seo
   const title = localize(seo?.metaTitle, locale) ||
-    `${localize(post?.title, locale) || 'Blog'} | M&M Marketing Qatar`
+    `${localize(post?.title, locale) || 'Blog'}`
   const description = localize(seo?.metaDescription, locale) ||
     localize(post?.excerpt, locale) ||
     "Marketing insights for Qatar businesses — SEO, web development, social media, branding, and paid ads from Doha's trusted marketing agency."
 
   return {
     title, description,
-    openGraph: {
+    openGraph: await pageOpenGraph(`/blog/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : post?.image?.asset?.url ? [post.image.asset.url] : [],
-    },
+    }),
     alternates: await pageAlternates(`/blog/${slug}`),
   }
 }
@@ -170,6 +172,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {
         "post": *[_type == "blog" && slug.current == $slug][0]{
           _id,
+          _updatedAt,
           title,
           category,
           author,
@@ -227,8 +230,34 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // a string — render it as a single paragraph in that case so nothing breaks.
   const isPortable = Array.isArray(post.content)
 
+  const blogLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description: excerpt || undefined,
+    inLanguage: locale === 'ar' ? 'ar' : 'en',
+    mainEntityOfPage: localeUrl(`/blog/${slug}`, locale),
+    datePublished: post.publishedAt,
+    dateModified: post._updatedAt || post.publishedAt,
+    image: post.image?.asset?.url ? [post.image.asset.url] : undefined,
+    author: { '@type': 'Organization', name: 'M&M Marketing', url: SITE_URL },
+    publisher: {
+      '@type': 'Organization',
+      name: 'M&M Marketing',
+      url: SITE_URL,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-dark-bg.avif` },
+    },
+  }
+  const crumbs = breadcrumbLd(locale, [
+    { name: locale === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
+    { name: locale === 'ar' ? 'المدونة' : 'Blog', path: '/blog' },
+    { name: title || 'Post', path: `/blog/${slug}` },
+  ])
+
   return (
     <PageLayout>
+      <JsonLd data={blogLd} />
+      <JsonLd data={crumbs} />
       <article className="max-w-5xl mx-auto px-6 pt-40 pb-24">
         <Link
           href={localizePath('/blog', locale)}

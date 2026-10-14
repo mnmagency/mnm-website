@@ -19,7 +19,8 @@
  */
 
 import Image from 'next/image'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd } from '@/lib/seo'
+import JsonLd from '@/app/components/JsonLd'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -147,11 +148,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   return {
     title, description,
-    openGraph: {
+    openGraph: await pageOpenGraph(`/services/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : service?.image?.asset?.url ? [service.image.asset.url] : [],
-      type: 'website',
-    },
+    }),
     twitter: { card: 'summary_large_image', title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] },
     alternates: await pageAlternates(`/services/${slug}`),
   }
@@ -251,8 +251,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   const services      = (formSettings?.services      || []).map(L).filter(Boolean) as string[]
   const budgetOptions = (formSettings?.budgetOptions || []).map(L).filter(Boolean) as string[]
 
+  const crumbs = breadcrumbLd(locale, [
+    { name: locale === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
+    { name: locale === 'ar' ? 'الخدمات' : 'Services', path: '/services' },
+    { name: serviceTitle || slug, path: `/services/${slug}` },
+  ])
+
   return (
     <PageLayout>
+      <JsonLd data={crumbs} />
       {service?.faqs && service.faqs.length > 0 && (
         <script
           type="application/ld+json"

@@ -10,7 +10,7 @@
  */
 
 import Link from 'next/link'
-import { pageAlternates } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph } from '@/lib/seo'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
@@ -181,12 +181,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    openGraph: {
+    openGraph: await pageOpenGraph(`/lp/${slug}`, {
       title,
       description,
       images: ogImage ? [ogImage] : [],
-      type: 'website',
-    },
+    }),
     alternates: await pageAlternates(`/lp/${slug}`),
   }
 }
