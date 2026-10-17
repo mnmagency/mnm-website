@@ -55,7 +55,7 @@ type Props = {
 function classes(variant: Variant) {
   if (variant === 'light') {
     const field =
-      'w-full p-4 rounded-xl bg-[#FAF7F2] border border-black/10 text-[#0E1635] placeholder:text-[#6B7280] outline-none focus:border-[#DFBA67] focus:ring-2 focus:ring-[#DFBA67]/30 transition'
+      'w-full p-4 rounded-xl bg-[#F3F5F8] border border-black/10 text-[#0E1635] placeholder:text-[#6B7280] outline-none focus:border-[#DFBA67] focus:ring-2 focus:ring-[#DFBA67]/30 transition'
     return {
       field,
       // Selects need a dropdown-arrow tweak so the chevron stays visible on light bg.
@@ -69,7 +69,7 @@ function classes(variant: Variant) {
       } as React.CSSProperties,
       optionClass: 'text-[#0E1635] bg-white',
       successBox:
-        'rounded-2xl bg-[#FAF7F2] border border-[#DFBA67]/30 p-6 text-[#0E1635]',
+        'rounded-2xl bg-[#F3F5F8] border border-[#DFBA67]/30 p-6 text-[#0E1635]',
       successTitle: 'text-xl font-bold text-[#0E1635] mb-2',
       successButton: 'text-[#DFBA67] font-bold hover:opacity-80 mt-2',
       errorBox:

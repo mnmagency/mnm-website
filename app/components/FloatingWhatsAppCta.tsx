@@ -170,7 +170,7 @@ export default function FloatingWhatsAppCta({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setOpen(false)}
-                    className="group flex items-center gap-3 px-5 py-4 hover:bg-[#FAF7F2] transition-colors"
+                    className="group flex items-center gap-3 px-5 py-4 hover:bg-[#F3F5F8] transition-colors"
                   >
                     <span className="flex-shrink-0 w-10 h-10 rounded-full bg-[#25D366]/10 flex items-center justify-center group-hover:bg-[#25D366]/20 transition-colors">
                       <WhatsAppGlyph className="w-5 h-5 fill-[#25D366]" />

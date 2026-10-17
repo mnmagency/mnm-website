@@ -372,16 +372,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
       {/* ─── Why it matters — LIGHT section with big gold quote ─── */}
       {serviceWhyItMatters && (
-        <section className="relative bg-[#FAF7F2] text-[#0E1635] py-24 lg:py-32 px-6 overflow-hidden">
-          {/* Decorative gold gradient wash, top-right */}
-          <div
-            className="absolute top-0 right-0 w-[40rem] h-[40rem] opacity-20 pointer-events-none"
-            style={{
-              background:
-                'radial-gradient(circle at center, #DFBA67 0%, transparent 60%)',
-            }}
-          />
-
+        <section className="relative bg-[#F3F5F8] text-[#0E1635] py-24 lg:py-32 px-6 overflow-hidden">
           <div className="relative max-w-5xl mx-auto">
             <p className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-4">
               {whyItMattersEyebrow}
@@ -424,7 +415,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               {service.deliverables.map((item, i) => (
                 <div
                   key={i}
-                  className="group relative bg-[#FAF7F2] border border-black/5 rounded-2xl p-6 hover:bg-white hover:border-[#DFBA67]/40 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/10 transition-all duration-300"
+                  className="group relative bg-[#F3F5F8] border border-black/5 rounded-2xl p-6 hover:bg-white hover:border-[#DFBA67]/40 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/10 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4">
                     <span className="flex-shrink-0 w-11 h-11 rounded-xl bg-[#0E1635] text-[#DFBA67] font-bold flex items-center justify-center group-hover:bg-[#DFBA67] group-hover:text-[#0E1635] group-hover:rotate-6 transition-all duration-300">
@@ -443,7 +434,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
       {/* ─── What we build — split layout with service image + content ─── */}
       {serviceContent && (
-        <section className="bg-[#FAF7F2] text-[#0E1635] py-24 lg:py-32 px-6 overflow-hidden">
+        <section className="bg-[#F3F5F8] text-[#0E1635] py-24 lg:py-32 px-6 overflow-hidden">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
             <div>
               <p className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-3">
@@ -467,7 +458,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
             {/* Right column — service image with gold "halo" gradient + offset frame */}
             <div className="relative">
               <div
-                className="absolute -inset-6 rounded-[2.5rem] opacity-50 blur-2xl pointer-events-none"
+                className="absolute -inset-6 rounded-[2.5rem] opacity-20 blur-2xl pointer-events-none"
                 style={{
                   background:
                     'radial-gradient(circle at 30% 30%, #DFBA67 0%, transparent 70%)',
@@ -809,7 +800,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   <CardTag
                     key={index}
                     {...(project.href ? { href: project.href } : {})}
-                    className="group block bg-[#FAF7F2] border border-black/5 rounded-2xl overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/15 transition-all duration-500"
+                    className="group block bg-[#F3F5F8] border border-black/5 rounded-2xl overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/15 transition-all duration-500"
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#0E1635]">
                       {project?.projectImage?.asset?.url ? (
@@ -873,7 +864,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
       {/* ─── FAQs — LIGHT section with bordered accordions ─── */}
       {service?.faqs && service.faqs.length > 0 && (
-        <section className="bg-[#FAF7F2] text-[#0E1635] py-24 lg:py-32 px-6">
+        <section className="bg-[#F3F5F8] text-[#0E1635] py-24 lg:py-32 px-6">
           <div className="max-w-4xl mx-auto">
             <div className="mb-12 text-center">
               <p className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-3">
@@ -892,7 +883,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                 >
                   <summary className="flex justify-between items-center cursor-pointer font-bold text-[#0E1635] list-none gap-6">
                     <span className="text-lg">{L(faq.question)}</span>
-                    <span className="flex-shrink-0 w-9 h-9 rounded-full bg-[#FAF7F2] text-[#DFBA67] text-2xl flex items-center justify-center group-open:rotate-45 group-open:bg-[#DFBA67] group-open:text-[#0E1635] transition-all duration-300">
+                    <span className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F3F5F8] text-[#DFBA67] text-2xl flex items-center justify-center group-open:rotate-45 group-open:bg-[#DFBA67] group-open:text-[#0E1635] transition-all duration-300">
                       +
                     </span>
                   </summary>
