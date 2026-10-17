@@ -134,22 +134,26 @@ export default async function WebProjectPage({ params }: { params: Promise<{ slu
     ...(p.websiteUrl ? { mainEntityOfPage: p.websiteUrl } : {}),
   }
 
+  const gallery = (p.gallery || []).filter((g) => g.asset?.url)
+  const goldOnLight = 'text-[#8A6A22]' // brand gold darkened for readable contrast on white
+
   return (
     <PageLayout>
       <JsonLd data={crumbs} />
       <JsonLd data={creativeWork} />
 
-      <section className="relative px-6 pt-40 pb-16 overflow-hidden">
+      {/* ── HERO (navy) ───────────────────────────────────────────── */}
+      <section className="relative px-6 pt-36 md:pt-40 pb-12 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(223,186,103,0.16),transparent_35%)]" />
         <div className="relative z-10 max-w-7xl mx-auto">
-          <Link href={localizePath('/portfolio', locale)} className="text-[#DFBA67] font-bold inline-block mb-10">
+          <Link href={localizePath('/portfolio', locale)} className="text-[#DFBA67] font-bold inline-block mb-8">
             {lb('backText', '← Back to Portfolio', '→ العودة إلى أعمالنا')}
           </Link>
-          <p className="text-[#DFBA67] uppercase tracking-widest mb-4">
+          <p className="text-[#DFBA67] uppercase tracking-widest text-sm mb-4">
             {[category, projectType].filter(Boolean).join(' · ') || portfolioName}
           </p>
-          <h1 className="text-4xl md:text-7xl font-bold leading-tight max-w-5xl mb-6">{title}</h1>
-          {L(p.summary) && <p className="text-lg md:text-xl text-[#8A95A5] max-w-3xl leading-relaxed mb-8">{L(p.summary)}</p>}
+          <h1 className="text-4xl md:text-7xl font-bold leading-[1.05] max-w-5xl mb-6">{title}</h1>
+          {L(p.summary) && <p className="text-lg md:text-xl text-[#C9D1DC] max-w-3xl leading-relaxed mb-8">{L(p.summary)}</p>}
           {p.websiteUrl && (
             <a
               href={p.websiteUrl}
@@ -161,121 +165,142 @@ export default async function WebProjectPage({ params }: { params: Promise<{ slu
             </a>
           )}
         </div>
+
+        {p.heroImage?.asset?.url && (
+          <div className="relative z-10 max-w-7xl mx-auto mt-12">
+            <div className="relative rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/10 aspect-[16/10]">
+              <Image
+                src={p.heroImage.asset.url}
+                alt={L(p.heroImage.alt) || title}
+                fill
+                priority
+                sizes="(max-width: 1280px) 100vw, 1200px"
+                className="object-cover object-top"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* One compact facts card */}
+        {(facts.length > 0 || (p.technologies?.length ?? 0) > 0) && (
+          <div className="relative z-10 max-w-7xl mx-auto mt-8">
+            <div className="rounded-2xl md:rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:p-8">
+              {facts.length > 0 && (
+                <dl className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6">
+                  {facts.map((f) => (
+                    <div key={f.label}>
+                      <dt className="text-[#DFBA67] uppercase tracking-widest text-xs mb-1.5">{f.label}</dt>
+                      <dd className="font-bold text-base md:text-lg leading-snug">{f.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {p.technologies && p.technologies.length > 0 && (
+                <div className={facts.length > 0 ? 'mt-6 pt-6 border-t border-white/10' : ''}>
+                  <p className="text-[#DFBA67] uppercase tracking-widest text-xs mb-3">{lb('techLabel', 'Technologies', 'التقنيات')}</p>
+                  <ul className="flex flex-wrap gap-2">
+                    {p.technologies.map((t) => (
+                      <li key={t} className="px-3.5 py-1.5 rounded-full bg-white/10 text-sm">{t}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
-      {p.heroImage?.asset?.url && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl shadow-black/30 aspect-[16/9]">
-            <Image
-              src={p.heroImage.asset.url}
-              alt={L(p.heroImage.alt) || title}
-              fill
-              priority
-              sizes="(max-width: 1280px) 100vw, 1200px"
-              className="object-cover object-top"
-            />
-          </div>
-        </section>
-      )}
-
-      {(facts.length > 0 || (p.technologies?.length ?? 0) > 0) && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {facts.map((f) => (
-              <div key={f.label} className="bg-white/[0.06] border border-white/10 rounded-3xl p-7">
-                <p className="text-[#DFBA67] uppercase tracking-widest text-xs mb-3">{f.label}</p>
-                <p className="text-xl font-bold">{f.value}</p>
-              </div>
-            ))}
-          </div>
-          {p.technologies && p.technologies.length > 0 && (
-            <div className="mt-6 bg-white/[0.06] border border-white/10 rounded-3xl p-7">
-              <p className="text-[#DFBA67] uppercase tracking-widest text-xs mb-4">{lb('techLabel', 'Technologies', 'التقنيات')}</p>
-              <ul className="flex flex-wrap gap-2">
-                {p.technologies.map((t) => (
-                  <li key={t} className="px-4 py-2 rounded-full bg-white/10 text-sm font-medium">{t}</li>
-                ))}
-              </ul>
+      {/* ── STORY (white) ─────────────────────────────────────────── */}
+      {(sections.length > 0 || features.length > 0 || p.caseStudySlug || p.services?.[0]?.slug) && (
+        <section className="bg-white text-[#0E1635] px-6 py-20 md:py-28">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-16">
+            <div className="lg:col-span-7 space-y-10">
+              {sections.map((s) => (
+                <div key={s.label}>
+                  <h2 className={`${goldOnLight} uppercase tracking-widest text-sm font-bold mb-3`}>{s.label}</h2>
+                  <p className="text-[#334155] text-lg leading-relaxed whitespace-pre-line">{s.body}</p>
+                </div>
+              ))}
+              {(p.caseStudySlug || p.services?.[0]?.slug) && (
+                <div className="flex flex-col gap-3 pt-2">
+                  {p.caseStudySlug && (
+                    <Link href={localizePath(`/case-studies/${p.caseStudySlug}`, locale)} className="font-bold text-[#0E1635] underline decoration-[#DFBA67] decoration-2 underline-offset-4 hover:text-[#8A6A22]">
+                      {lb('caseStudyText', 'Read the full case study →', 'اقرأ دراسة الحالة كاملة ←')}
+                    </Link>
+                  )}
+                  {p.services?.[0]?.slug && (
+                    <Link href={localizePath(`/services/${p.services[0].slug}`, locale)} className="font-bold text-[#0E1635] underline decoration-[#DFBA67] decoration-2 underline-offset-4 hover:text-[#8A6A22]">
+                      {L(labels?.relatedServiceText) || L(p.services[0].title)}
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+
+            {features.length > 0 && (
+              <div className="lg:col-span-5">
+                <div className="lg:sticky lg:top-28 rounded-2xl border border-slate-200 p-7 md:p-8">
+                  <h2 className="text-2xl font-bold mb-6">{lb('featuresLabel', 'Key Features', 'أبرز المزايا')}</h2>
+                  <ul className="space-y-4">
+                    {features.map((f) => (
+                      <li key={f} className="flex gap-3 items-start">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#DFBA67] text-[#0E1635] text-sm font-bold" aria-hidden>✓</span>
+                        <span className="text-[#334155] leading-relaxed">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
         </section>
       )}
 
-      {sections.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {sections.map((s) => (
-              <div key={s.label} className="bg-white/[0.06] border border-white/10 rounded-3xl p-8">
-                <h2 className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-4">{s.label}</h2>
-                <p className="text-[#C9D1DC] leading-relaxed whitespace-pre-line">{s.body}</p>
+      {/* ── GALLERY (light grey) ──────────────────────────────────── */}
+      {gallery.length > 0 && (
+        <section className="bg-[#F3F5F8] px-6 py-20 md:py-28">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6 md:gap-8">
+            {gallery.map((g, i) => (
+              <div
+                key={i}
+                className={`relative aspect-[16/10] rounded-2xl overflow-hidden bg-white shadow-xl shadow-slate-900/10 ring-1 ring-slate-900/5 ${
+                  gallery.length % 2 === 1 && i === 0 ? 'md:col-span-2' : ''
+                }`}
+              >
+                <Image
+                  src={g.asset!.url!}
+                  alt={L(g.alt) || title}
+                  fill
+                  sizes={gallery.length % 2 === 1 && i === 0 ? '(max-width: 1280px) 100vw, 1200px' : '(max-width: 768px) 100vw, 50vw'}
+                  className="object-cover object-top"
+                />
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {features.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">{lb('featuresLabel', 'Key Features', 'أبرز المزايا')}</h2>
-          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {features.map((f) => (
-              <li key={f} className="flex gap-3 bg-white/[0.06] border border-white/10 rounded-2xl p-5">
-                <span className="text-[#DFBA67] font-bold" aria-hidden>✓</span>
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {p.gallery && p.gallery.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="grid md:grid-cols-2 gap-6">
-            {p.gallery.filter((g) => g.asset?.url).map((g, i) => (
-              <div key={i} className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-white/10">
-                <Image src={g.asset!.url!} alt={L(g.alt) || title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-top" />
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {(p.caseStudySlug || p.services?.[0]?.slug) && (
-        <section className="max-w-7xl mx-auto px-6 pb-20 flex flex-col gap-4">
-          {p.caseStudySlug && (
-            <Link href={localizePath(`/case-studies/${p.caseStudySlug}`, locale)} className="text-[#DFBA67] font-bold text-lg">
-              {lb('caseStudyText', 'Read the full case study →', 'اقرأ دراسة الحالة كاملة ←')}
-            </Link>
-          )}
-          {p.services?.[0]?.slug && (
-            <Link href={localizePath(`/services/${p.services[0].slug}`, locale)} className="text-[#DFBA67] font-bold text-lg">
-              {L(labels?.relatedServiceText) || L(p.services[0].title)}
-            </Link>
-          )}
-        </section>
-      )}
-
+      {/* ── MORE PROJECTS (navy) ──────────────────────────────────── */}
       {more.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
+        <section className="max-w-7xl mx-auto px-6 py-20 md:py-24">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">{lb('moreProjectsTitle', 'More projects', 'مشاريع أخرى')}</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {more.map((m) => (
-              <Link key={m.slug} href={localizePath(`/portfolio/${m.slug}`, locale)} className="group rounded-3xl overflow-hidden bg-white/[0.06] border border-white/10">
-                <div className="relative aspect-[16/10] bg-white/10 overflow-hidden">
+              <Link key={m.slug} href={localizePath(`/portfolio/${m.slug}`, locale)} className="group block">
+                <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-white/10 ring-1 ring-white/10">
                   {m.heroImage?.asset?.url && (
                     <Image src={m.heroImage.asset.url} alt={L(m.heroImage.alt) || L(m.title)} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover object-top group-hover:scale-105 transition duration-700" />
                   )}
                 </div>
-                <div className="p-6">
-                  <p className="text-[#DFBA67] uppercase tracking-widest text-xs mb-2">{L(m.category)}</p>
-                  <h3 className="text-xl font-bold">{L(m.title)}</h3>
-                </div>
+                <p className="text-[#DFBA67] uppercase tracking-widest text-xs mt-4 mb-1">{L(m.category)}</p>
+                <h3 className="text-xl font-bold group-hover:text-[#DFBA67] transition-colors">{L(m.title)}</h3>
               </Link>
             ))}
           </div>
         </section>
       )}
 
+      {/* ── CTA (gold) ────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="bg-[#DFBA67] text-[#0E1635] rounded-[2rem] p-10 md:p-16 text-center shadow-2xl shadow-black/20">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">{lb('ctaTitle', 'Want a website like this?', 'تريد موقعاً مثل هذا؟')}</h2>
