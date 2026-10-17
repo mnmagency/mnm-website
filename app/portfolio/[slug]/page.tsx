@@ -37,6 +37,7 @@ type WebProject = {
   clientLogo?: Img
   gallery?: Img[]
   caseStudySlug?: string
+  services?: { title?: LocaleField; slug?: string }[]
   seo?: { metaTitle?: LocaleField; metaDescription?: LocaleField; ogImage?: Img }
   _updatedAt?: string
 }
@@ -48,6 +49,7 @@ const PROJECT_QUERY = `*[_type == "webProject" && slug.current == $slug][0]{
   summary, overview, challenge, solution, results, features,
   heroImage{ asset->{url}, alt }, clientLogo{ asset->{url} }, gallery[]{ asset->{url}, alt },
   "caseStudySlug": relatedCaseStudy->slug.current,
+  "services": relatedServices[]->{ title, "slug": slug.current },
   seo{ metaTitle, metaDescription, ogImage{ asset->{url} } }
 }`
 
@@ -79,7 +81,7 @@ export default async function WebProjectPage({ params }: { params: Promise<{ slu
     "project": ${PROJECT_QUERY},
     "labels": *[_type == "portfolioPage"][0]{
       eyebrow, backText, visitSiteText, clientLabel, industryLabel, typeLabel, yearLabel, techLabel,
-      overviewLabel, challengeLabel, solutionLabel, resultsLabel, featuresLabel, caseStudyText,
+      overviewLabel, challengeLabel, solutionLabel, resultsLabel, featuresLabel, caseStudyText, relatedServiceText,
       moreProjectsTitle, ctaTitle, ctaText, ctaButtonText, ctaButtonLink
     },
     "more": *[_type == "webProject" && defined(slug.current) && slug.current != $slug]
@@ -238,11 +240,18 @@ export default async function WebProjectPage({ params }: { params: Promise<{ slu
         </section>
       )}
 
-      {p.caseStudySlug && (
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <Link href={localizePath(`/case-studies/${p.caseStudySlug}`, locale)} className="text-[#DFBA67] font-bold text-lg">
-            {lb('caseStudyText', 'Read the full case study →', 'اقرأ دراسة الحالة كاملة ←')}
-          </Link>
+      {(p.caseStudySlug || p.services?.[0]?.slug) && (
+        <section className="max-w-7xl mx-auto px-6 pb-20 flex flex-col gap-4">
+          {p.caseStudySlug && (
+            <Link href={localizePath(`/case-studies/${p.caseStudySlug}`, locale)} className="text-[#DFBA67] font-bold text-lg">
+              {lb('caseStudyText', 'Read the full case study →', 'اقرأ دراسة الحالة كاملة ←')}
+            </Link>
+          )}
+          {p.services?.[0]?.slug && (
+            <Link href={localizePath(`/services/${p.services[0].slug}`, locale)} className="text-[#DFBA67] font-bold text-lg">
+              {L(labels?.relatedServiceText) || L(p.services[0].title)}
+            </Link>
+          )}
         </section>
       )}
 

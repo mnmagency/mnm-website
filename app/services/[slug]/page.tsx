@@ -106,6 +106,7 @@ type Service = {
   sections?: SectionBlock[]
   faqs?: Faq[]
   heroEyebrow?: LocaleField
+  heroTitle?: LocaleField
   heroCtaButtonText?: LocaleField
   heroCtaButtonLink?: string
   whatWeBuildEyebrow?: LocaleField
@@ -192,7 +193,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           _id,
           title, description, content, whyItMatters, deliverables,
           ctaTitle, ctaText,
-          heroEyebrow, heroCtaButtonText, heroCtaButtonLink,
+          heroTitle, heroEyebrow, heroCtaButtonText, heroCtaButtonLink,
           whatWeBuildEyebrow, whatWeBuildTitle,
           whyItMattersEyebrow, whyItMattersTitle,
           deliverablesEyebrow, deliverablesTitle,
@@ -337,7 +338,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               </p>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-[1.05]">
-              {serviceTitle}
+              {L(service.heroTitle) || serviceTitle}
             </h1>
             {serviceDescription && (
               <p className="text-lg text-[#8A95A5] leading-relaxed mb-8">
