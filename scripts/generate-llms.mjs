@@ -87,6 +87,9 @@ async function fetchAll() {
       "caseStudies": *[_type == "caseStudy" && defined(slug.current)] | order(_createdAt desc){
         title, slug, client, industry, category, description, challenge, solution, results
       },
+      "webProjects": *[_type == "webProject" && defined(slug.current)] | order(coalesce(order, 999) asc){
+        title, slug, websiteUrl, "description": summary
+      },
       "blogs": *[_type == "blog" && defined(slug.current)] | order(publishedAt desc)[0...30]{
         title, slug, category, author, excerpt, content, publishedAt
       },
@@ -166,6 +169,21 @@ function buildLlmsTxt(data) {
       const desc = describe(c)
       lines.push(`- [${title}](${SITE_URL}/case-studies/${slug})${desc ? `: ${desc}` : ''}`)
       lines.push(`- [${title} (العربية)](${SITE_URL}/ar/case-studies/${slug})`)
+    }
+    lines.push('')
+  }
+
+  if (data.webProjects?.length > 0) {
+    lines.push('## Web development portfolio')
+    lines.push('')
+    for (const w of data.webProjects) {
+      const slug = w.slug?.current
+      if (!slug) continue
+      const title = clean(localize(w.title, 'en') || slug)
+      const desc = describe(w)
+      const live = w.websiteUrl ? ` (live site: ${w.websiteUrl})` : ''
+      lines.push(`- [${title}](${SITE_URL}/portfolio/${slug})${desc ? `: ${desc}` : ''}${live}`)
+      lines.push(`- [${title} (العربية)](${SITE_URL}/ar/portfolio/${slug})`)
     }
     lines.push('')
   }

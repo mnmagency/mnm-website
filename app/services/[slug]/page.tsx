@@ -56,6 +56,18 @@ type ProjectItem = {
   clientLogo?: ImageRef
   title?: LocaleField
   description?: LocaleField
+  /** Set when the card comes from a Portfolio webProject — links to /portfolio/{slug}. */
+  href?: string
+}
+
+type WebProjectRef = {
+  slug?: string
+  title?: LocaleField
+  clientName?: LocaleField
+  category?: LocaleField
+  summary?: LocaleField
+  heroImage?: ImageRef
+  clientLogo?: ImageRef
 }
 
 type Faq = { _id?: string; question?: LocaleField; answer?: LocaleField }
@@ -80,6 +92,8 @@ type Service = {
   ctaText?: LocaleField
   image?: ImageRef
   projects?: ProjectItem[]
+  webProjects?: WebProjectRef[]
+  portfolioViewAllText?: LocaleField
   sections?: SectionBlock[]
   faqs?: Faq[]
   heroEyebrow?: LocaleField
@@ -184,6 +198,12 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           formEyebrow, formTitle, formSubtitle, formSubmitText,
           finalCtaButtonText, finalCtaButtonLink,
           image{ asset->{url} },
+          "webProjects": featuredWebProjects[]->{
+            "slug": slug.current, title, clientName, category, summary,
+            heroImage{ asset->{url} },
+            clientLogo{ asset->{url} }
+          },
+          "portfolioViewAllText": *[_type == "portfolioPage"][0].viewAllText,
           projects[]{
             clientName, category, title, description,
             projectImage{ asset->{url} },
@@ -225,6 +245,21 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   const deliverablesTitle   = L(service.deliverablesTitle)   || (locale === 'ar' ? 'كل ما يلزم لتحويل الاستراتيجية إلى تنفيذ قابل للقياس.' : 'Everything you need to turn strategy into measurable execution.')
   const projectsEyebrow     = L(service.projectsEyebrow)     || (locale === 'ar' ? 'دراسات الحالة' : 'Case Studies')
   const projectsTitle       = L(service.projectsTitle)       || (locale === 'ar' ? 'نتائج حقيقية في قطر' : 'Real Results in Qatar')
+  // Portfolio projects (referenced webProject docs) take over from the legacy
+  // inline `projects[]` cards once any are selected on the service.
+  const portfolioCards: ProjectItem[] = (service.webProjects || [])
+    .filter((p) => p?.slug)
+    .map((p) => ({
+      title: p.title,
+      clientName: p.clientName,
+      category: p.category,
+      description: p.summary,
+      projectImage: p.heroImage,
+      clientLogo: p.clientLogo,
+      href: localizePath(`/portfolio/${p.slug}`, locale),
+    }))
+  const projectCards: ProjectItem[] = portfolioCards.length > 0 ? portfolioCards : (service.projects || [])
+  const portfolioViewAllText = portfolioCards.length > 0 ? L(service.portfolioViewAllText) : ''
   const videoSamplesEyebrow = L(service.videoSamplesEyebrow) || (locale === 'ar' ? 'الريل المختار' : 'Selected Reel')
   const videoSamplesTitle   = L(service.videoSamplesTitle)   || (locale === 'ar' ? 'شاهد عملنا' : 'Watch our work')
   const videoSamplesSubtitle = L(service.videoSamplesSubtitle)
@@ -631,7 +666,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       })}
 
       {/* ─── Projects / Case Studies — LIGHT section with lifting photo cards ─── */}
-      {service?.projects && service.projects.length > 0 && (
+      {projectCards.length > 0 && (
         <section className="bg-white text-[#0E1635] py-24 lg:py-32 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="mb-14 text-center">
@@ -643,15 +678,17 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               </h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {service.projects.map((project, index) => {
+              {projectCards.map((project, index) => {
                 const pTitle = L(project.title)
                 const pCategory = L(project.category)
                 const pClientName = L(project.clientName)
                 const pDescription = L(project.description)
+                const CardTag = project.href ? 'a' : 'div'
                 return (
-                  <div
+                  <CardTag
                     key={index}
-                    className="group bg-[#FAF7F2] border border-black/5 rounded-2xl overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/15 transition-all duration-500"
+                    {...(project.href ? { href: project.href } : {})}
+                    className="group block bg-[#FAF7F2] border border-black/5 rounded-2xl overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/15 transition-all duration-500"
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#0E1635]">
                       {project?.projectImage?.asset?.url ? (
@@ -695,10 +732,20 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                         </p>
                       )}
                     </div>
-                  </div>
+                  </CardTag>
                 )
               })}
             </div>
+            {portfolioViewAllText && (
+              <div className="mt-12 text-center">
+                <a
+                  href={localizePath('/portfolio', locale)}
+                  className="inline-flex items-center min-h-12 px-8 rounded-full border-2 border-[#0E1635] text-[#0E1635] font-bold hover:bg-[#0E1635] hover:text-white transition"
+                >
+                  {portfolioViewAllText}
+                </a>
+              </div>
+            )}
           </div>
         </section>
       )}

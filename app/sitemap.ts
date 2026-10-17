@@ -24,12 +24,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     blogs: Slug[]
     caseStudies: Slug[]
     landingPages: Slug[]
+    webProjects: Slug[]
   }>(`
     {
       "services":     *[_type == "service"     && defined(slug.current)]{ slug, _updatedAt },
       "blogs":        *[_type == "blog"        && defined(slug.current)]{ slug, _updatedAt },
       "caseStudies":  *[_type == "caseStudy"   && defined(slug.current)]{ slug, _updatedAt },
-      "landingPages": *[_type == "landingPage" && defined(slug.current)]{ slug, _updatedAt }
+      "landingPages": *[_type == "landingPage" && defined(slug.current)]{ slug, _updatedAt },
+      "webProjects":  *[_type == "webProject"  && defined(slug.current)]{ slug, _updatedAt }
     }
   `)
 
@@ -44,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/about',        changeFrequency: 'monthly', priority: 0.8 },
     { path: '/services',     changeFrequency: 'monthly', priority: 0.9 },
     { path: '/case-studies', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/portfolio',    changeFrequency: 'weekly',  priority: 0.8 },
     { path: '/blog',         changeFrequency: 'weekly',  priority: 0.7 },
     { path: '/faqs',         changeFrequency: 'monthly', priority: 0.5 },
     { path: '/contact',      changeFrequency: 'monthly', priority: 0.6 },
@@ -106,6 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicRoutes: MetadataRoute.Sitemap = [
     ...dynamicEntries('/services',     data?.services     ?? [], 'monthly', 0.8),
     ...dynamicEntries('/case-studies', data?.caseStudies  ?? [], 'monthly', 0.7),
+    ...dynamicEntries('/portfolio',    data?.webProjects  ?? [], 'monthly', 0.7),
     ...dynamicEntries('/blog',         data?.blogs        ?? [], 'weekly',  0.6),
     // Campaign landing pages — high priority for ranking on target keywords
     ...dynamicEntries('/lp',           data?.landingPages ?? [], 'monthly', 0.9),
