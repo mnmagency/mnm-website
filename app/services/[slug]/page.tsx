@@ -47,6 +47,15 @@ type SectionBlock = {
   buttonText?: LocaleField
   buttonLink?: string
   image?: ImageRef
+  // cardsBlock
+  numbered?: boolean
+  cards?: Array<{ tag?: LocaleField; title?: LocaleField; text?: LocaleField }>
+  // comparisonBlock
+  criterionLabel?: LocaleField
+  optionALabel?: LocaleField
+  optionBLabel?: LocaleField
+  rows?: Array<{ criterion?: LocaleField; optionA?: LocaleField; optionB?: LocaleField }>
+  footnote?: LocaleField
 }
 
 type ProjectItem = {
@@ -212,6 +221,9 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           sections[]{
             _type, eyebrow, title, subtitle, content, caption,
             items, text, buttonText, buttonLink,
+            numbered, cards[]{ tag, title, text },
+            criterionLabel, optionALabel, optionBLabel,
+            rows[]{ criterion, optionA, optionB }, footnote,
             image{ asset->{url} }
           },
           "faqs": *[_type == "faq" && relatedService._ref == ^._id] | order(_createdAt asc){
@@ -638,6 +650,114 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                     </div>
                   ))}
                 </div>
+              </div>
+            </section>
+          )
+        }
+
+        if (section._type === 'cardsBlock') {
+          const cards = section.cards || []
+          if (cards.length === 0) return null
+          return (
+            <section key={index} className="py-24 px-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="mb-12 max-w-3xl">
+                  {sEyebrow && (
+                    <p className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-3">{sEyebrow}</p>
+                  )}
+                  {sTitle && <h2 className="text-3xl md:text-5xl font-bold mb-5">{sTitle}</h2>}
+                  {sSubtitle && <p className="text-lg text-[#8A95A5] leading-relaxed">{sSubtitle}</p>}
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {cards.map((card, cardIndex) => {
+                    const cTag = L(card.tag)
+                    const cTitle = L(card.title)
+                    const cText = L(card.text)
+                    return (
+                      <div key={cardIndex} className="bg-white/[0.06] border border-white/10 rounded-3xl p-8 flex flex-col">
+                        <div className="flex items-center gap-3 mb-5">
+                          {section.numbered && (
+                            <span className="text-4xl font-bold text-[#DFBA67]/40 leading-none">
+                              {String(cardIndex + 1).padStart(2, '0')}
+                            </span>
+                          )}
+                          {cTag && (
+                            <span className="text-xs uppercase tracking-widest font-bold text-[#DFBA67] border border-[#DFBA67]/40 rounded-full px-3 py-1">
+                              {cTag}
+                            </span>
+                          )}
+                        </div>
+                        {cTitle && <h3 className="text-xl font-bold mb-3">{cTitle}</h3>}
+                        {cText && <p className="text-[#C9D1DC] leading-relaxed whitespace-pre-line">{cText}</p>}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </section>
+          )
+        }
+
+        if (section._type === 'comparisonBlock') {
+          const rows = section.rows || []
+          if (rows.length === 0) return null
+          const aLabel = L(section.optionALabel)
+          const bLabel = L(section.optionBLabel)
+          const critLabel = L(section.criterionLabel)
+          const sFootnote = L(section.footnote)
+          return (
+            <section key={index} className="bg-white/[0.03] border-y border-white/5 py-24 px-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="mb-12 max-w-3xl">
+                  {sEyebrow && (
+                    <p className="text-[#DFBA67] uppercase tracking-widest text-sm font-bold mb-3">{sEyebrow}</p>
+                  )}
+                  {sTitle && <h2 className="text-3xl md:text-5xl font-bold mb-5">{sTitle}</h2>}
+                  {sSubtitle && <p className="text-lg text-[#8A95A5] leading-relaxed">{sSubtitle}</p>}
+                </div>
+
+                {/* Desktop: real table (semantic, crawlable) */}
+                <div className="hidden md:block overflow-hidden rounded-3xl border border-white/10">
+                  <table className="w-full text-start border-collapse">
+                    <thead>
+                      <tr className="bg-white/[0.06]">
+                        <th scope="col" className="p-5 text-start text-sm uppercase tracking-widest text-[#8A95A5] font-bold w-1/5">{critLabel}</th>
+                        <th scope="col" className="p-5 text-start text-lg font-bold w-2/5">{aLabel}</th>
+                        <th scope="col" className="p-5 text-start text-lg font-bold w-2/5 bg-[#DFBA67] text-[#0E1635]">{bLabel}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row, rowIndex) => (
+                        <tr key={rowIndex} className="border-t border-white/10 align-top">
+                          <th scope="row" className="p-5 text-start font-bold text-white">{L(row.criterion)}</th>
+                          <td className="p-5 text-[#C9D1DC] leading-relaxed">{L(row.optionA)}</td>
+                          <td className="p-5 text-white leading-relaxed bg-[#DFBA67]/10">{L(row.optionB)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile: stacked cards */}
+                <div className="md:hidden space-y-4">
+                  {rows.map((row, rowIndex) => (
+                    <div key={rowIndex} className="rounded-2xl border border-white/10 overflow-hidden">
+                      <p className="px-5 py-3 bg-white/[0.06] font-bold">{L(row.criterion)}</p>
+                      <div className="px-5 py-4 border-t border-white/10">
+                        <p className="text-xs uppercase tracking-widest text-[#8A95A5] font-bold mb-1">{aLabel}</p>
+                        <p className="text-[#C9D1DC] leading-relaxed">{L(row.optionA)}</p>
+                      </div>
+                      <div className="px-5 py-4 border-t border-white/10 bg-[#DFBA67]/10">
+                        <p className="text-xs uppercase tracking-widest text-[#DFBA67] font-bold mb-1">{bLabel}</p>
+                        <p className="text-white leading-relaxed">{L(row.optionB)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {sFootnote && (
+                  <p className="mt-8 text-[#8A95A5] leading-relaxed max-w-4xl whitespace-pre-line">{sFootnote}</p>
+                )}
               </div>
             </section>
           )
