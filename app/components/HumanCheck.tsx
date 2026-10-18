@@ -38,14 +38,14 @@ export default function HumanCheck({
 
   return (
     <>
-      {/* Honeypot — visually hidden; humans never fill it, bots do. */}
+      {/* Honeypot: visually hidden (clipped, not pushed off-screen, so RTL pages do not scroll sideways); humans never fill it, bots do. */}
       <input
         type="text"
         name="website"
         tabIndex={-1}
         autoComplete="off"
         aria-hidden="true"
-        className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden"
+        className="absolute h-px w-px -m-px p-0 overflow-hidden border-0 opacity-0 pointer-events-none [clip:rect(0,0,0,0)]"
       />
       <input type="hidden" name="humanA" value={ch?.a ?? ''} readOnly />
       <input type="hidden" name="humanB" value={ch?.b ?? ''} readOnly />
