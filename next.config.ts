@@ -13,42 +13,89 @@ import type { NextConfig } from "next";
  *  - Old `/ar/*` Arabic versions → redirect to the closest English equivalent
  *    for now (replace once an Arabic locale is added)
  */
+/**
+ * Old WordPress URLs → their closest page on the new site.
+ *
+ * Built from Search Console's "Not found (404)" export (26 Oct 2026). Each
+ * entry is emitted twice: once for English and once under /ar/ pointing at
+ * the Arabic page, so old Arabic links land in Arabic. Pages with backlinks
+ * keep their value only if they 301 to a relevant page, so service pages go
+ * to the matching service, not the generic /services list.
+ *
+ * WordPress internals (wp-admin, wp-includes, pixpopup-item popups) are left
+ * as 404 on purpose: they have no value and Google drops them on its own.
+ * Trailing slashes are stripped by Next first, so '/x/' matches '/x'.
+ */
+const oldToNew: Array<[string, string]> = [
+  // Services
+  ['/marketing-services',                                  '/services'],
+  ['/marketing-services/web-development',                  '/services/web-development'],
+  ['/marketing-services/seo-agency-in-qatar',              '/services/seo'],
+  ['/marketing-services/content-generation-and-optimization', '/services/seo'],
+  ['/marketing-services/social-media-marketing',           '/services/social-media'],
+  ['/marketing-services/influencer-marketing',             '/services/social-media'],
+  ['/marketing-services/bulk-sms',                         '/services/bulk-sms'],
+  ['/marketing-services/google-ads',                       '/services/paid-ads'],
+  ['/marketing-services/media-planning',                   '/services/paid-ads'],
+  ['/marketing-services/photography/:path*',               '/services/videography'],
+  ['/marketing-services/photography',                      '/services/videography'],
+  ['/marketing-services/email-marketing-in-qatar',         '/services'],
+  ['/marketing-services/event-marketing',                  '/services'],
+  ['/services/social-media-marketing',                     '/services/social-media'],
+  ['/services/influencer-management',                      '/services/social-media'],
+  ['/lp/influencer-qatar',                                 '/services/social-media'],
+  ['/social-media-services',                               '/services/social-media'],
+  ['/qatar-social-media-agency',                           '/services/social-media'],
+  ['/search-engine-optimization-service',                  '/services/seo'],
+  ['/media-plan-service',                                  '/services/paid-ads'],
+  ['/email-marketing-service',                             '/services'],
+  ['/branding-services',                                   '/services/branding'],
+
+  // Old blog posts → the new post on the same topic, else the matching service
+  ['/how-mm-marketing-agency-builds-social-media-strategies-that-truly-convert', '/blog/how-m-and-m-marketing-agency-builds-social-media-strategies-that-truly-convert'],
+  ['/web-design-qatar-benefits',                           '/services/web-development'],
+  ['/top-10-website-features-that-drive-engagement-in-qatar', '/blog/why-most-websites-in-qatar-don-t-convert'],
+  ['/transforming-your-digital-strategy-with-effective-web-development-in-qatar', '/services/web-development'],
+  ['/seo-qatar-business-growth',                           '/services/seo'],
+  ['/how-an-seo-agency-in-qatar-can-elevate-your-business', '/blog/how-to-choose-an-seo-company-in-qatar'],
+  ['/content-marketing-techniques',                        '/blog'],
+  ['/7-common-mistakes-to-avoid-in-your-online-marketing-strategy-in-qatar', '/blog/best-marketing-agency-in-qatar-how-to-choose'],
+  ['/marketing-agencies-in-qatar',                         '/blog/best-marketing-agency-in-qatar-how-to-choose'],
+  ['/marketing-agencies-in-qatar-2',                       '/blog/best-marketing-agency-in-qatar-how-to-choose'],
+  ['/7-tips-for-crafting-the-perfect-sms-marketing-campaign-in-qatar', '/services/bulk-sms'],
+  ['/12-examples-of-successful-sms-campaigns-in-qatar',    '/services/bulk-sms'],
+  ['/15-creative-ideas-for-your-next-sms-campaign-in-qatar-to-increase-customer-loyalty', '/services/bulk-sms'],
+  ['/8-game-changing-features-in-email-marketing-tools-that-can-skyrocket-your-engagement-rates', '/blog'],
+  ['/12-steps-to-an-effective-email-marketing-strategy-in-qatar', '/blog'],
+
+  // Archives, authors, categories, pagination
+  ['/blog/page/:n',                                        '/blog'],
+  ['/category/:path*',                                     '/blog'],
+  ['/author/:path*',                                       '/blog'],
+  ['/page/:n',                                             '/'],
+  ['/testimonials/:path*',                                 '/about'],
+
+  // Portfolio and other pages
+  ['/portfolio-item/:path*',                               '/portfolio'],
+  ['/portfolio-item',                                      '/portfolio'],
+  ['/works',                                               '/portfolio'],
+  ['/our-works',                                           '/portfolio'],
+  ['/mm-marketing-our-work-in-qatar',                      '/portfolio'],
+  ['/contact-mm-marketing',                                '/contact'],
+  ['/landing-page',                                        '/get-strategy'],
+  ['/homepage',                                            '/'],
+  ['/our-team',                                            '/about'],
+]
+
+const toAr = (path: string) => (path === '/' ? '/ar' : `/ar${path}`)
+
 const legacyRedirects = [
-  // Marketing services index + sub-services
-  { source: '/marketing-services',                            destination: '/services', permanent: true },
-  { source: '/marketing-services/event-marketing',            destination: '/services', permanent: true },
-  { source: '/marketing-services/web-development',            destination: '/services/web-development', permanent: true },
-  { source: '/marketing-services/bulk-sms',                   destination: '/services/bulk-sms', permanent: true },
-  { source: '/marketing-services/influencer-marketing',       destination: '/services', permanent: true },
-
-  // Top-level service pages
-  { source: '/social-media-services',           destination: '/services/social-media', permanent: true },
-  { source: '/media-plan-service',              destination: '/services', permanent: true },
-  { source: '/search-engine-optimization-service', destination: '/services/seo', permanent: true },
-  { source: '/email-marketing-service',         destination: '/services', permanent: true },
-
-  // Misc old pages
-  { source: '/mm-marketing-our-work-in-qatar',  destination: '/portfolio',    permanent: true },
-  { source: '/contact-mm-marketing',            destination: '/contact',      permanent: true },
-  { source: '/landing-page',                    destination: '/get-strategy', permanent: true },
-  { source: '/homepage',                        destination: '/',             permanent: true },
-  { source: '/our-team',                        destination: '/about',        permanent: true },
+  ...oldToNew.map(([source, destination]) => ({ source, destination, permanent: true })),
+  ...oldToNew.map(([source, destination]) => ({ source: toAr(source), destination: toAr(destination), permanent: true })),
 
   // /work was consolidated into /case-studies in Phase 3-D
   { source: '/work',           destination: '/case-studies',         permanent: true },
   { source: '/work/:slug*',    destination: '/case-studies/:slug*',  permanent: true },
-
-  // Arabic (no Arabic locale yet — point to English equivalents)
-  { source: '/ar/marketing-services',                                         destination: '/ar/services', permanent: true },
-  { source: '/ar/marketing-services/content-generation-and-optimization',     destination: '/services', permanent: true },
-  { source: '/ar/marketing-services/email-marketing-in-qatar',                destination: '/services', permanent: true },
-  { source: '/ar/marketing-services/seo-agency-in-qatar',                     destination: '/ar/services/seo', permanent: true },
-  { source: '/ar/marketing-services/event-marketing',                         destination: '/services', permanent: true },
-  { source: '/ar/marketing-agencies-in-qatar',                                destination: '/ar',       permanent: true },
-  { source: '/ar/our-works',                                                  destination: '/ar/portfolio', permanent: true },
-  { source: '/ar/portfolio-item/city-center-doha',                            destination: '/work',     permanent: true },
-  { source: '/ar/7-tips-for-crafting-the-perfect-sms-marketing-campaign-in-qatar', destination: '/blog', permanent: true },
-  { source: '/ar/12-examples-of-successful-sms-campaigns-in-qatar',           destination: '/blog',     permanent: true },
 ]
 
 const nextConfig: NextConfig = {
