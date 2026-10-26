@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph, breadcrumbLd } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, brandTitle } from '@/lib/seo'
 import JsonLd from '@/app/components/JsonLd'
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     'Explore M&M Marketing case studies and measurable growth results in Qatar.'
 
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph(`/case-studies/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : caseStudy?.image?.asset?.url ? [caseStudy.image.asset.url] : [],

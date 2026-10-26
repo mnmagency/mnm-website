@@ -19,7 +19,7 @@
  */
 
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph, breadcrumbLd } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, brandTitle, localeUrl, SITE_URL } from '@/lib/seo'
 import JsonLd from '@/app/components/JsonLd'
 import { notFound } from 'next/navigation'
 import { client } from '@/lib/sanity'
@@ -171,7 +171,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     'M&M Marketing is a leading marketing agency in Qatar delivering SEO, web development, social media management, branding, paid ads, videography, and bulk SMS for brands in Doha and across Qatar.'
 
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph(`/services/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : service?.image?.asset?.url ? [service.image.asset.url] : [],
@@ -208,11 +208,13 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           formEyebrow, formTitle, formSubtitle, formSubmitText,
           finalCtaButtonText, finalCtaButtonLink,
           image{ asset->{url} },
+          // Sorted by each project's "Order" field so new projects slot in
+          // where they belong instead of at the end.
           "webProjects": featuredWebProjects[]->{
-            "slug": slug.current, title, clientName, category, summary,
+            order, "slug": slug.current, title, clientName, category, summary,
             heroImage{ asset->{url} },
             clientLogo{ asset->{url} }
-          },
+          } | order(order asc),
           "portfolioViewAllText": *[_type == "portfolioPage"][0].viewAllText,
           projects[]{
             clientName, category, title, description,
@@ -305,9 +307,36 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     { name: serviceTitle || slug, path: `/services/${slug}` },
   ])
 
+  // Service schema: tells search engines and AI assistants what this page
+  // offers, where (Qatar / Doha), in which languages, and shows real work.
+  const serviceLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${localeUrl(`/services/${slug}`, locale)}#service`,
+    name: L(service.heroTitle) || serviceTitle,
+    serviceType: serviceTitle,
+    description: serviceDescription || undefined,
+    url: localeUrl(`/services/${slug}`, locale),
+    inLanguage: locale,
+    availableLanguage: ['en', 'ar'],
+    areaServed: [
+      { '@type': 'Country', name: 'Qatar' },
+      { '@type': 'City', name: 'Doha' },
+    ],
+    provider: { '@type': 'ProfessionalService', '@id': `${SITE_URL}/#organization`, name: 'M&M Marketing', url: SITE_URL },
+    ...((service.webProjects?.length ?? 0) > 0 && {
+      subjectOf: service.webProjects!.filter((p) => p.slug).map((p) => ({
+        '@type': 'CreativeWork',
+        name: L(p.title),
+        url: localeUrl(`/portfolio/${p.slug}`, locale),
+      })),
+    }),
+  }
+
   return (
     <PageLayout>
       <JsonLd data={crumbs} />
+      <JsonLd data={serviceLd} />
       {service?.faqs && service.faqs.length > 0 && (
         <script
           type="application/ld+json"

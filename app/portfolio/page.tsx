@@ -4,7 +4,7 @@
  * All copy comes from the `portfolioPage` singleton and `webProject`
  * documents in Sanity. Fallback strings only render if a field is blank.
  */
-import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, brandTitle } from '@/lib/seo'
 import JsonLd from '@/app/components/JsonLd'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -41,7 +41,7 @@ export async function generateMetadata() {
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
     'Websites designed and developed by M&M Marketing in Qatar.'
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph('/portfolio', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/portfolio'),
   }

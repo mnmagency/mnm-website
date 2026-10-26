@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import SeoAuditWidget from '@/app/seo-audit/SeoAuditWidget'
 import { localize } from '@/lib/locale'
@@ -22,7 +22,7 @@ export async function generateMetadata() {
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
     'Free SEO audit for your website. Get a full report covering technical SEO, on-page optimisation, performance, and growth opportunities.'
   return {
-    title,
+    title: brandTitle(title),
     description,
     openGraph: await pageOpenGraph('/seo-audit', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/seo-audit'),

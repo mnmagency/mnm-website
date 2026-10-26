@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import { localize, localizePath } from '@/lib/locale'
@@ -52,7 +52,7 @@ export async function generateMetadata() {
     localize(seo?.metaDescription, locale) ||
     'M&M Marketing builds growth systems combining strategy, execution, and measurable results for businesses in Qatar.'
   return {
-    title,
+    title: brandTitle(title),
     description,
     openGraph: await pageOpenGraph('/about', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/about'),

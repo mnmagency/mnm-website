@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import { localize } from '@/lib/locale'
 import { getLocale } from '@/lib/locale-server'
@@ -46,7 +46,7 @@ export async function generateMetadata() {
   const description = localize(seo?.metaDescription, locale) || localize(page?.subtitle, locale) ||
     'Frequently asked questions about M&M Marketing services in Qatar.'
   return {
-    title,
+    title: brandTitle(title),
     description,
     openGraph: await pageOpenGraph('/faqs', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/faqs'),

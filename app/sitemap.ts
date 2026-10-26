@@ -3,8 +3,11 @@ import { client } from '@/lib/sanity'
 
 const SITE_URL = 'https://mnmagency.com'
 
-// Regenerate hourly so new Sanity pages and posts appear without a redeploy.
-export const revalidate = 3600
+// Built on every request. Background ISR regeneration silently stopped
+// (sitemap stuck on 18 Oct 2026, new portfolio projects missing), and this is
+// one cheap query against Sanity's CDN (plus the 60s data cache), so we
+// don't rely on it.
+export const dynamic = 'force-dynamic'
 const LOCALES = ['en', 'ar'] as const
 
 type Slug = { slug?: { current?: string }; _updatedAt?: string }
@@ -30,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "services":     *[_type == "service"     && defined(slug.current)]{ slug, _updatedAt },
       "blogs":        *[_type == "blog"        && defined(slug.current)]{ slug, _updatedAt },
       "caseStudies":  *[_type == "caseStudy"   && defined(slug.current)]{ slug, _updatedAt },
-      "landingPages": *[_type == "landingPage" && defined(slug.current)]{ slug, _updatedAt },
+      "landingPages": *[_type == "landingPage" && defined(slug.current) && hideFromSearch != true]{ slug, _updatedAt },
       "webProjects":  *[_type == "webProject"  && defined(slug.current)]{ slug, _updatedAt }
     }
   `)
@@ -107,12 +110,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
-    ...dynamicEntries('/services',     data?.services     ?? [], 'monthly', 0.8),
+    ...dynamicEntries('/services',     data?.services     ?? [], 'monthly', 0.9),
     ...dynamicEntries('/case-studies', data?.caseStudies  ?? [], 'monthly', 0.7),
     ...dynamicEntries('/portfolio',    data?.webProjects  ?? [], 'monthly', 0.7),
     ...dynamicEntries('/blog',         data?.blogs        ?? [], 'weekly',  0.6),
-    // Campaign landing pages — high priority for ranking on target keywords
-    ...dynamicEntries('/lp',           data?.landingPages ?? [], 'monthly', 0.9),
+    // Campaign landing pages. Service pages are the ranking pages; LPs that
+    // duplicate a service keyword are hidden from search (hideFromSearch).
+    ...dynamicEntries('/lp',           data?.landingPages ?? [], 'monthly', 0.6),
   ]
 
   return [...staticRoutes, ...dynamicRoutes]

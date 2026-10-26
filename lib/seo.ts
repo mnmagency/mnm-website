@@ -68,3 +68,12 @@ export function breadcrumbLd(locale: 'en' | 'ar', items: { name: string; path: s
     })),
   }
 }
+
+/**
+ * The root layout appends " | M&M" to every page title. When a title from
+ * Sanity already names the brand ("... | M&M Marketing"), return it as an
+ * absolute title so it isn't doubled ("... | M&M | M&M").
+ */
+export function brandTitle(title: string): string | { absolute: string } {
+  return /M&M/.test(title) ? { absolute: title } : title
+}

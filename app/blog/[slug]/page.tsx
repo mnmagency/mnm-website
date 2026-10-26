@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, SITE_URL } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, SITE_URL, brandTitle } from '@/lib/seo'
 import JsonLd from '@/app/components/JsonLd'
 import Link from 'next/link'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "Marketing insights for Qatar businesses — SEO, web development, social media, branding, and paid ads from Doha's trusted marketing agency."
 
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph(`/blog/${slug}`, {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : post?.image?.asset?.url ? [post.image.asset.url] : [],

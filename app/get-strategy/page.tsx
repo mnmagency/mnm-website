@@ -1,5 +1,5 @@
 import { client } from '@/lib/sanity'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import PageLayout from '@/app/components/PageLayout'
 import StrategyForm from '@/app/components/StrategyForm'
 import { localize } from '@/lib/locale'
@@ -54,7 +54,7 @@ export async function generateMetadata() {
   `)
   const seo = form?.seo
   return {
-    title: localize(seo?.metaTitle, locale) || localize(form?.title, locale) || 'Free Marketing Consultation in Qatar | M&M Marketing',
+    title: brandTitle(localize(seo?.metaTitle, locale) || localize(form?.title, locale) || 'Free Marketing Consultation in Qatar | M&M Marketing'),
     description: localize(seo?.metaDescription, locale) || localize(form?.subtitle, locale) ||
       "Book a free marketing consultation with Qatar's leading marketing agency. Tell us about your business and get a tailored marketing plan within 24 hours.",
     openGraph: await pageOpenGraph('/get-strategy', {

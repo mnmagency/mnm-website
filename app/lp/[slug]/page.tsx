@@ -19,7 +19,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import JsonLd from '@/app/components/JsonLd'
@@ -73,6 +73,7 @@ type LandingPage = {
   }
   slug?: { current?: string }
   serviceTag?: string
+  hideFromSearch?: boolean
   hero?: {
     eyebrow?: LocaleField
     title?: LocaleField
@@ -197,6 +198,7 @@ const LP_PROJECTION = `{
   seo{ metaTitle, metaDescription, ogImage{asset->{url}} },
   slug,
   serviceTag,
+  hideFromSearch,
   hero{
     eyebrow, title, subtitle, ctaText, trustNote, secondaryText, showcase, stats,
     image${IMG}, backgroundImage${IMG}, backgroundVideo{asset->{url}}
@@ -255,10 +257,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     lp.hero?.image?.asset?.url
 
   return {
-    title,
+    title: brandTitle(title),
     description,
     openGraph: await pageOpenGraph(`/lp/${slug}`, { title, description, images: ogImage ? [ogImage] : [] }),
     alternates: await pageAlternates(`/lp/${slug}`),
+    // Ad-only pages that would compete with the matching service page.
+    ...(lp.hideFromSearch && { robots: { index: false, follow: true } }),
   }
 }
 

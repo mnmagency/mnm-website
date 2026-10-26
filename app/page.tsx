@@ -19,7 +19,7 @@
  */
 
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import Link from 'next/link'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -140,7 +140,7 @@ export async function generateMetadata() {
     localize(seo?.metaDescription, locale) ||
     "M&M Marketing is a full-service marketing agency in Doha, Qatar — trusted by leading brands for SEO, web development, social media, branding, paid ads, and videography."
   return {
-    title,
+    title: brandTitle(title),
     description,
     openGraph: await pageOpenGraph('/', {
       title,

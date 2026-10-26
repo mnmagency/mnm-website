@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import ServiceIcon from '@/app/components/ServiceIcon'
@@ -32,7 +32,7 @@ export async function generateMetadata() {
     'Complete marketing services in Qatar — SEO, web development, web design, social media management, branding, paid ads, videography, and bulk SMS. Full-service marketing agency in Doha.'
 
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph('/services', {
       title, description,
       images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [],

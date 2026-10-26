@@ -6,7 +6,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, SITE_URL } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, breadcrumbLd, localeUrl, SITE_URL, brandTitle } from '@/lib/seo'
 import JsonLd from '@/app/components/JsonLd'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description = localize(p.seo?.metaDescription, locale) || localize(p.summary, locale) || localize(p.overview, locale)
   const img = p.seo?.ogImage?.asset?.url || p.heroImage?.asset?.url
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph(`/portfolio/${slug}`, { title, description, images: img ? [img] : [] }),
     alternates: await pageAlternates(`/portfolio/${slug}`),
   }

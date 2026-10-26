@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { pageAlternates, pageOpenGraph } from '@/lib/seo'
+import { pageAlternates, pageOpenGraph, brandTitle } from '@/lib/seo'
 import { client } from '@/lib/sanity'
 import PageLayout from '@/app/components/PageLayout'
 import { localize, localizePath } from '@/lib/locale'
@@ -35,7 +35,7 @@ export async function generateMetadata() {
     'Explore M&M Marketing case studies across websites, SEO, social media, branding, paid media, and growth systems in Qatar.'
 
   return {
-    title, description,
+    title: brandTitle(title), description,
     openGraph: await pageOpenGraph('/case-studies', { title, description, images: seo?.ogImage?.asset?.url ? [seo.ogImage.asset.url] : [] }),
     alternates: await pageAlternates('/case-studies'),
   }
